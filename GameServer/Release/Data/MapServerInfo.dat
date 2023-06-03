@@ -1,0 +1,21 @@
+0
+//ServerCode   MapServerGroup   InitSetVal          IpAddress           Port
+0	           0	            1	                SYour-IP            55901
+19	           0	            0	                SYour-IP            55919
+end
+
+1
+//ServerCode   NotMoveOption   NextMap   NextServerCode
+0	           0	           30        19
+0	           0	           31        19
+0	           0	           34        19
+0	           0	           41        19
+0	           0	           42        19
+0	           0	           79        19
+19	           1	           30        -1
+19	           1	           31        -1
+19	           1	           34        -1
+19	           1	           41        -1
+19	           1	           42        -1
+19	           1	           79        -1
+end

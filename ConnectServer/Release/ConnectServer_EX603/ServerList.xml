@@ -1,0 +1,4 @@
+<ServerList>
+	<Server Code="0" IP="YourIP" Port="55901" Visible="1" Name="GameServer" />
+	<Server Code="19" IP="YourIP" Port="55919" Visible="0" Name="GameServer_CS" />
+</ServerList>
