@@ -1,0 +1,7 @@
+//Section   Type   Level   Dur   Skill   Luck   Option   ExcOp	SetOp	JoH	OEx	Socket1	Socket2	Socket3	Socket4	Socket5
+13          71     0       0     1       1      3        0	0	0	0	255	255	255	255	255
+13          72     0       0     1       1      3        0	0	0	0	255	255	255	255	255
+13          73     0       0     1       1      3        0	0	0	0	255	255	255	255	255
+13          74     0       0     1       1      3        0	0	0	0	255	255	255	255	255
+13          75     0       0     1       1      3        0	0	0	0	255	255	255	255	255
+end
