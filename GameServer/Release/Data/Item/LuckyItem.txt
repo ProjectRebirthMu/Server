@@ -1,0 +1,55 @@
+//Index   Group   Decay   Option0   Option1   Option2   Option3   Option4   Option5   Option6   Comment
+3646      0       2400    10        10        10        10        10        10        10        //Scale Helm
+3647      0       2400    10        10        10        10        10        10        10        //Silk Helm
+3648      0       2400    10        10        10        10        10        10        10        //Sphinx Helm
+3649      0       2400    10        10        10        10        10        10        10        //Violent Wind Helm
+3650      1       2400    10        10        10        10        10        10        10        //Dark Soul Helm
+3651      1       2400    10        10        10        10        10        10        10        //Dragon Helm
+3652      1       2400    10        10        10        10        10        10        10        //Guardian Helm
+3653      1       2400    10        10        10        10        10        10        10        //Legendary Helm
+3654      1       2400    10        10        10        10        10        10        10        //Red Wing Helm
+3656      1       2400    10        10        10        10        10        10        10        //Storm Jahad Helm
+4158      0       2400    10        10        10        10        10        10        10        //Scale Armor
+4159      0       2400    10        10        10        10        10        10        10        //Silk Armor
+4160      0       2400    10        10        10        10        10        10        10        //Sphinx Armor
+4161      0       2400    10        10        10        10        10        10        10        //Violent Wind Armor
+4162      1       2400    10        10        10        10        10        10        10        //Dark Soul Armor
+4163      1       2400    10        10        10        10        10        10        10        //Dragon Armor
+4164      1       2400    10        10        10        10        10        10        10        //Guardian Armor
+4165      1       2400    10        10        10        10        10        10        10        //Legendary Armor
+4166      1       2400    10        10        10        10        10        10        10        //Red Wing Armor
+4167      1       2400    10        10        10        10        10        10        10        //Atlans Armor
+4168      1       2400    10        10        10        10        10        10        10        //Storm Jahad Armor
+4670      0       2400    10        10        10        10        10        10        10        //Scale Pants
+4671      0       2400    10        10        10        10        10        10        10        //Silk Pants
+4672      0       2400    10        10        10        10        10        10        10        //Sphinx Pants
+4673      0       2400    10        10        10        10        10        10        10        //Violent Wind Pants
+4674      1       2400    10        10        10        10        10        10        10        //Dark Soul Pants
+4675      1       2400    10        10        10        10        10        10        10        //Dragon Pants
+4676      1       2400    10        10        10        10        10        10        10        //Guardian Pants
+4677      1       2400    10        10        10        10        10        10        10        //Legendary Pants
+4678      1       2400    10        10        10        10        10        10        10        //Red Wing Pants
+4679      1       2400    10        10        10        10        10        10        10        //Atlans Pants
+4680      1       2400    10        10        10        10        10        10        10        //Storm Jahad Pants
+5182      0       2400    10        10        10        10        10        10        10        //Scale Gloves
+5183      0       2400    10        10        10        10        10        10        10        //Silk Gloves
+5184      0       2400    10        10        10        10        10        10        10        //Sphinx Gloves
+5185      0       2400    10        10        10        10        10        10        10        //Violent Wind Gloves
+5186      1       2400    10        10        10        10        10        10        10        //Dark Soul Gloves
+5187      1       2400    10        10        10        10        10        10        10        //Dragon Gloves
+5188      1       2400    10        10        10        10        10        10        10        //Guardian Gloves
+5189      1       2400    10        10        10        10        10        10        10        //Legendary Gloves
+5190      1       2400    10        10        10        10        10        10        10        //Red Wing Gloves
+5191      1       2400    10        10        10        10        10        10        10        //Atlans Gloves
+5694      0       2400    10        10        10        10        10        10        10        //Scale Boots
+5695      0       2400    10        10        10        10        10        10        10        //Silk Boots
+5696      0       2400    10        10        10        10        10        10        10        //Sphinx Boots
+5697      0       2400    10        10        10        10        10        10        10        //Violent Wind Boots
+5698      1       2400    10        10        10        10        10        10        10        //Dark Soul Boots
+5699      1       2400    10        10        10        10        10        10        10        //Dragon Boots
+5700      1       2400    10        10        10        10        10        10        10        //Guardian Boots
+5701      1       2400    10        10        10        10        10        10        10        //Legendary Boots
+5702      1       2400    10        10        10        10        10        10        10        //Red Wing Boots
+5703      1       2400    10        10        10        10        10        10        10        //Atlans Boots
+5704      1       2400    10        10        10        10        10        10        10        //Storm Jahad Boots
+end
