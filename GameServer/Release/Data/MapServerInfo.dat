@@ -1,7 +1,7 @@
 0
 //ServerCode   MapServerGroup   InitSetVal          IpAddress           Port
-0	           0	            1	                SYour-IP            55901
-19	           0	            0	                SYour-IP            55919
+0	           0	            1	                S169.254.107.213    55901
+19	           0	            0	                S169.254.107.213    55919
 end
 
 1
