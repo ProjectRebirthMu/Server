@@ -42,7 +42,7 @@ Se você quiser contribuir para este projeto, fique à vontade para enviar suas 
 
 ## Licença
 
-Este projeto é licenciado sob a [MIT License](LICENSE).
+Este projeto é licenciado sob a [MIT License](LICENSE.txt).
 
 ## Agradecimentos
 
