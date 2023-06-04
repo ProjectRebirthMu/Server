@@ -1,1 +1,7 @@
-
+//|================================================================|
+//| Zythe CashShop Editor                                          |
+//| Credit: Zyth3/louis                          [skype:tec-facil] |
+//|================================================================|
+//ID	Number	Value	Item	Level	Skill	Luck	Option	ExOpt	AncOp	JOH	Oexe	Socket1	Socket2	Socket3	Socket4	Socket5	Qtd	Duration	Comment
+1000	1000	10	6780	1	0	0	0	0	0	0	0	255	255	255	255	255	0	2592000	// Paid Channel Access Ticket (30 Days)
+end

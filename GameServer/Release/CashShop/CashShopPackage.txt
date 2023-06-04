@@ -1,0 +1,7 @@
+//|================================================================|
+//| Zythe CashShop Editor                                          |
+//| Credit: Zyth3/louis                          [skype:tec-facil] |
+//|================================================================|
+//Cat	ID	Main	Item	Coin	Price	Bonus	PBase1	PBase2	PBase3	PBase4	PBase5	PBase6	PBase7	PBase8	PBase9	PBase10	PMain1	PMain2	PMain3	PMain4	PMain5	PMain6	PMain7	PMain8	PMain9	PMain10	Comment
+31	100	100	1	508	10	0	1000	0	0	0	0	0	0	0	0	0	1000	0	0	0	0	0	0	0	0	0	// Paid Channel Access Ticket
+end
