@@ -361,3 +361,7 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+/ConnectServer/ConnectServer/ConnectServer.vcxproj
+/ConnectServer/Release/ConnectServer_EX603/ServerList.xml
+/ConnectServer/Release/ConnectServer_EX603/ServerList.xml
+/ConnectServer/ConnectServer/ConnectServer.vcxproj
