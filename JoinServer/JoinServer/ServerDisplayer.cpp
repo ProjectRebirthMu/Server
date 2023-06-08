@@ -102,7 +102,7 @@ void CServerDisplayer::LogTextPaint() // OK
 	GetClientRect(this->m_hwnd, &rect);
 
 	rect.top = 100;
-	rect.bottom = 200;
+	rect.bottom = 500;
 
 	HDC hdc = GetDC(this->m_hwnd);
 
