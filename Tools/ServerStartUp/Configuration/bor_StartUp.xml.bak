@@ -1,8 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Processes>
-  <Process Run="True" Delay="1000" Path="C:\Users\Patrick\Documents\MMORPG\main\Source Server\ConnectServer\Release\ConnectServer_EX603\ConnectServer.exe" Parameters="" />
-  <Process Run="True" Delay="1000" Path="C:\Users\Patrick\Documents\MMORPG\main\Source Server\DataServer\Release\DataServer_EX603\DataServer.exe" Parameters="" />
-  <Process Run="True" Delay="1000" Path="C:\Users\Patrick\Documents\MMORPG\main\Source Server\JoinServer\Release\JoinServer_EX603\JoinServer.exe" Parameters="" />
-  <Process Run="True" Delay="1000" Path="C:\Users\Patrick\Documents\MMORPG\main\Source Server\GameServer\Release\GameServer_EX603\GameServer.exe" Parameters="" />
-  <Process Run="True" Delay="1000" Path="C:\Users\Patrick\Documents\MMORPG\main\Source Server\GameServer\Release\GameServer_EX603CS\GameServerCS.exe" Parameters="" />
-</Processes>

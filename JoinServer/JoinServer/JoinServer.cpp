@@ -58,7 +58,7 @@ int APIENTRY WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstance,LPSTR lpCmdLine
 
 	char buff[256];
 
-	sprintf_s(buff, sizeof(buff), "Loading files...");
+	wsprintf(buff,"[%s] %s JoinServer (QueueSize : %d) (AccountCount : %d/%d)",JOINSERVER_VERSION,JOINSERVER_CLIENT,0,0,0);
 
 	SetWindowText(hWnd,buff);
 
@@ -128,6 +128,8 @@ int APIENTRY WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstance,LPSTR lpCmdLine
 
 	gServerDisplayer.PaintAllInfo();
 
+	gServerDisplayer.PaintName();
+
 	SetTimer(hWnd,TIMER_2000,2000,0);
 
 	HACCEL hAccelTable = LoadAccelerators(hInstance,(LPCTSTR)IDC_JOINSERVER);
@@ -150,48 +152,42 @@ int APIENTRY WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstance,LPSTR lpCmdLine
 	return msg.wParam;
 }
 
-ATOM MyRegisterClass(HINSTANCE hInstance)
+ATOM MyRegisterClass(HINSTANCE hInstance) // OK
 {
-	WNDCLASSEX wcex = { 0 }; // Inicializa a struct com 0 em todos os membros
+	WNDCLASSEX wcex;
 
 	wcex.cbSize = sizeof(WNDCLASSEX);
+
 	wcex.style = CS_HREDRAW | CS_VREDRAW;
-	wcex.lpfnWndProc = WndProc;
+	wcex.lpfnWndProc = (WNDPROC)WndProc;
 	wcex.cbClsExtra = 0;
 	wcex.cbWndExtra = 0;
 	wcex.hInstance = hInstance;
-	wcex.hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(IDC_JOINSERVER));
-	wcex.hCursor = LoadCursor(NULL, IDC_ARROW);
-	wcex.hbrBackground = (HBRUSH)(COLOR_WINDOW + 4);
-	wcex.lpszMenuName = MAKEINTRESOURCE(IDC_JOINSERVER);
+	wcex.hIcon = LoadIcon(hInstance,(LPCTSTR)IDI_JOINSERVER);
+	wcex.hCursor = LoadCursor(0,IDC_ARROW);
+	wcex.hbrBackground = (HBRUSH)(COLOR_WINDOW+1);
+	wcex.lpszMenuName = (LPCSTR)IDC_JOINSERVER;
 	wcex.lpszClassName = szWindowClass;
-	wcex.hIconSm = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
+	wcex.hIconSm = LoadIcon(wcex.hInstance,(LPCTSTR)IDI_SMALL);
 
 	return RegisterClassEx(&wcex);
 }
 
-BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
+BOOL InitInstance(HINSTANCE hInstance,int nCmdShow) // OK
 {
 	hInst = hInstance;
-	hWnd = CreateWindow(szWindowClass, szTitle, WS_OVERLAPPED | WS_MINIMIZEBOX | WS_SYSMENU, CW_USEDEFAULT, 0, 800, 600, 0, 0, hInstance, 0);
 
-	if (hWnd == NULL)
+	hWnd = CreateWindow(szWindowClass,szTitle,WS_OVERLAPPEDWINDOW | WS_THICKFRAME,CW_USEDEFAULT,0,600,600,0,0,hInstance,0);
+
+	if(hWnd == 0)
 	{
-		return FALSE;
+		return 0;
 	}
 
-	HWND hWndStatusBar;
-	hWndStatusBar = CreateWindowEx(0, STATUSCLASSNAME, NULL, WS_CHILD | WS_VISIBLE, 0, 0, 0, 0, hWnd, (HMENU)IDC_STATUSBAR, hInstance, NULL);
-	ShowWindow(hWndStatusBar, SW_HIDE);
-
-	int iQueueBarWidths[] = { 80,180,300,400,500,600, -1 };
-
-	SendMessage(hWndStatusBar, SB_SETPARTS, 7, (LPARAM)iQueueBarWidths);
-	ShowWindow(hWnd, nCmdShow);
+	ShowWindow(hWnd,nCmdShow);
 	UpdateWindow(hWnd);
-	return TRUE;
+	return 1;
 }
-
 
 LRESULT CALLBACK WndProc(HWND hWnd,UINT message,WPARAM wParam,LPARAM lParam) // OK
 {
@@ -243,21 +239,20 @@ LRESULT CALLBACK WndProc(HWND hWnd,UINT message,WPARAM wParam,LPARAM lParam) // 
 	return 0;
 }
 
-LRESULT CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
+LRESULT CALLBACK About(HWND hDlg,UINT message,WPARAM wParam,LPARAM lParam) // OK
 {
-	switch (message)
+	switch(message)
 	{
-	case WM_INITDIALOG:
-		SetDlgItemText(hDlg, IDC_VERSION, VERSION);
-		SetDlgItemText(hDlg, IDC_EXPIREDATE, "09/09/2099");
-		return TRUE;
-	case WM_COMMAND:
-		if (LOWORD(wParam) == IDOK || LOWORD(wParam) == IDCANCEL)
-		{
-			EndDialog(hDlg, LOWORD(wParam));
-			return TRUE;
-		}
-		break;
+		case WM_INITDIALOG:
+			return 1;
+		case WM_COMMAND:
+			if(LOWORD(wParam) == IDOK || LOWORD(wParam) == IDCANCEL)
+			{
+				EndDialog(hDlg,LOWORD(wParam));
+				return 1;
+			}
+			break;
 	}
-	return FALSE;
+
+	return 0;
 }
