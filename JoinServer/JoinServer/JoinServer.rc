@@ -39,13 +39,13 @@ IDI_SMALL               ICON                    "Rebirth_Small.ico"
 
 IDC_JOINSERVER MENU
 BEGIN
-    POPUP "&File"
+    POPUP "&Home"
     BEGIN
-        MENUITEM "Exit",                        IDM_EXIT
+        MENUITEM "Sair",                        IDM_EXIT
     END
-    POPUP "&Help"
+    POPUP "&Informações"
     BEGIN
-        MENUITEM "&About ...",                  IDM_ABOUT
+        MENUITEM "&Sobre...",                  IDM_ABOUT
     END
 END
 
@@ -67,15 +67,22 @@ END
 // Dialog
 //
 
-IDD_ABOUTBOX DIALOGEX 22, 17, 230, 42
+IDD_ABOUTBOX DIALOGEX 22, 17, 217, 76
 STYLE DS_SETFONT | DS_MODALFRAME | WS_CAPTION | WS_SYSMENU
-CAPTION "About"
-FONT 8, "System", 0, 0, 0x0
+EXSTYLE WS_EX_WINDOWEDGE | WS_EX_STATICEDGE
+CAPTION "Sobre"
+FONT 8, "Tahoma", 400, 0, 0x0
 BEGIN
-    ICON            IDI_JOINSERVER,IDC_MYICON,14,9,20,20
-    LTEXT           "Louis JoinServer",IDC_STATIC,49,10,119,8,SS_NOPREFIX
-    LTEXT           "Louis Copyright (C) 2017",IDC_STATIC,49,20,119,8
-    DEFPUSHBUTTON   "OK",IDOK,195,6,30,11,WS_GROUP
+ICON            IDI_JOINSERVER, IDC_MYICON, 14, 9, 20, 20
+LTEXT           "JoinServer", IDC_STATIC, 49, 10, 119, 8, SS_NOPREFIX
+DEFPUSHBUTTON   "OK", IDOK, 181, 60, 30, 11, WS_GROUP
+GROUPBOX        "", IDC_STATIC, 6, 2, 204, 30
+CTEXT           "Copyright© 2023", IDC_STATIC, 7, 48, 201, 8
+LTEXT           "Versão:", IDC_STATIC, 49, 19, 28, 8, SS_NOPREFIX
+LTEXT           "0", IDC_VERSION, 78, 19, 29, 8, SS_NOPREFIX
+GROUPBOX        "", IDC_STATIC, 6, 27, 204, 17
+LTEXT           "Expira em:", IDC_STATIC, 14, 33, 42, 8, SS_NOPREFIX
+LTEXT           "0", IDC_EXPIREDATE, 59, 33, 140, 8, SS_NOPREFIX
 END
 
 
@@ -176,14 +183,14 @@ BEGIN
     BEGIN
         BLOCK "040904b0"
         BEGIN
-            VALUE "CompanyName", "MuEMU"
+            VALUE "CompanyName", "ProjectRebirthMu"
             VALUE "FileDescription", "JoinServer"
-            VALUE "FileVersion", "1.0.0.0"
+            VALUE "FileVersion", "1.0.0.1"
             VALUE "InternalName", "JoinServer"
-            VALUE "LegalCopyright", "Copyright © MuEMU.pl 2015"
+            VALUE "LegalCopyright", "Copyright © 2023"
             VALUE "OriginalFilename", "JoinServer.exe"
-            VALUE "ProductName", "MuEMU JoinServer"
-            VALUE "ProductVersion", "1.0.0.0"
+            VALUE "ProductName", "JoinServer"
+            VALUE "ProductVersion", "1.0.0.1"
         END
     END
     BLOCK "VarFileInfo"

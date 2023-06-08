@@ -66,46 +66,6 @@ void CServerDisplayer::Run() // OK
 	this->PaintStatusBar();
 }
 
-void CServerDisplayer::PaintStatusBar() // OK
-{
-	char buff[256];
-
-	wsprintf(buff, "[%s] DataServer | XML %s", DATASERVER_VERSION, VERSION);
-
-	SetWindowText(this->m_hwnd, buff);
-
-	HWND hWndStatusBar = GetDlgItem(this->m_hwnd, IDC_STATUSBAR);
-
-	char szTempText[85];
-
-	wsprintf(szTempText, "QueueSize: %d", gSocketManager.GetQueueSize());
-	SendMessage(hWndStatusBar, SB_SETTEXT, 0, (LPARAM)szTempText);
-
-	int state = 0;
-
-	for (int n = 0; n < MAX_SERVER; n++)
-	{
-		if (gServerManager[n].CheckState() == 0)
-			continue;
-
-		if ((GetTickCount() - gServerManager[n].m_PacketTime) <= 60000)
-		{
-			state = 1;
-			break;
-		}
-	}
-
-	wsprintf(szTempText, "Mode: %s", (state == 0) ? "Standby" : "Active");
-	SendMessage(hWndStatusBar, SB_SETTEXT, 1, (LPARAM)szTempText);
-
-	sprintf_s(szTempText, "Licença: Premium");
-	SendMessage(hWndStatusBar, SB_SETTEXT, 2, (LPARAM)szTempText);
-
-	SendMessage(hWndStatusBar, SB_SETTEXT, 3, (LPARAM)NULL);
-
-	ShowWindow(hWndStatusBar, SW_SHOW);
-}
-
 void CServerDisplayer::PaintAllInfo() // OK
 {
 	RECT rect;
@@ -137,7 +97,7 @@ void CServerDisplayer::LogTextPaint() // OK
 
 	GetClientRect(this->m_hwnd, &rect);
 
-	rect.top = -10;
+	rect.top = -50;
 	rect.bottom = 500;
 
 	HDC hdc = GetDC(this->m_hwnd);
@@ -204,6 +164,46 @@ void CServerDisplayer::LogTextPaint() // OK
 	}
 
 	ReleaseDC(this->m_hwnd, hdc);
+}
+
+void CServerDisplayer::PaintStatusBar() // OK
+{
+	char buff[256];
+
+	wsprintf(buff, "[%s] DataServer | XML %s", DATASERVER_VERSION, VERSION);
+
+	SetWindowText(this->m_hwnd, buff);
+
+	HWND hWndStatusBar = GetDlgItem(this->m_hwnd, IDC_STATUSBAR);
+
+	char szTempText[85];
+
+	wsprintf(szTempText, "QueueSize: %d", gSocketManager.GetQueueSize());
+	SendMessage(hWndStatusBar, SB_SETTEXT, 0, (LPARAM)szTempText);
+
+	int state = 0;
+
+	for (int n = 0; n < MAX_SERVER; n++)
+	{
+		if (gServerManager[n].CheckState() == 0)
+			continue;
+
+		if ((GetTickCount() - gServerManager[n].m_PacketTime) <= 60000)
+		{
+			state = 1;
+			break;
+		}
+	}
+
+	wsprintf(szTempText, "Mode: %s", (state == 0) ? "Standby" : "Active");
+	SendMessage(hWndStatusBar, SB_SETTEXT, 1, (LPARAM)szTempText);
+
+	sprintf_s(szTempText, "Licença: Premium");
+	SendMessage(hWndStatusBar, SB_SETTEXT, 2, (LPARAM)szTempText);
+
+	SendMessage(hWndStatusBar, SB_SETTEXT, 3, (LPARAM)NULL);
+
+	ShowWindow(hWndStatusBar, SW_SHOW);
 }
 
 void CServerDisplayer::LogAddText(eLogColor color, char* text, int size) // OK
