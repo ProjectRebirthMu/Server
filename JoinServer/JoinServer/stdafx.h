@@ -4,6 +4,8 @@
 
 #define _WIN32_WINNT _WIN32_WINNT_WINXP
 
+#define VERSION "1.0.0.1"
+
 #define JOINSERVER_VERSION "JS"
 #define JOINSERVER_CLIENT "LOUIS MS EMULATOR"
 
@@ -40,6 +42,7 @@
 #include <Rpc.h>
 #include <dbghelp.h>
 #include <Psapi.h>
+#include <chrono>
 
 #pragma comment(lib,"ws2_32.lib")
 #pragma comment(lib,"comctl32.lib")

@@ -13,6 +13,10 @@ enum eLogColor
 	LOG_RED = 1,
 	LOG_GREEN = 2,
 	LOG_BLUE = 3,
+	LOG_ORANGE = 4,
+	LOG_PURPLE = 5,
+	LOG_PINK = 6,
+	LOG_YELLOW = 7,
 };
 
 struct LOG_DISPLAY_INFO
@@ -28,18 +32,17 @@ public:
 	virtual ~CServerDisplayer();
 	void Init(HWND hWnd);
 	void Run();
-	void SetWindowName();
+	void PaintStatusBar();
 	void PaintAllInfo();
-	void PaintName();
 	void LogTextPaint();
 	void LogAddText(eLogColor color,char* text,int size);
 private:
 	HWND m_hwnd;
 	HFONT m_font;
-	HBRUSH m_brush[3];
+	HBRUSH m_brush;
 	LOG_DISPLAY_INFO m_log[MAX_LOG_TEXT_LINE];
 	int m_count;
-	char m_DisplayerText[2][64];
+	char m_DisplayerText[64];
 };
 
 extern CServerDisplayer gServerDisplayer;
