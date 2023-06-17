@@ -12,11 +12,8 @@ CSocketManagerUdp gSocketManagerUdp;
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
-CSocketManagerUdp::CSocketManagerUdp() // OK
+CSocketManagerUdp::CSocketManagerUdp() : m_socket(INVALID_SOCKET), m_ServerRecvThread(0), m_RecvBuff{}, m_RecvSize(0), m_SendBuff{}, m_SendSize(0), m_SocketAddr{}
 {
-	this->m_socket = INVALID_SOCKET;
-
-	this->m_ServerRecvThread = 0;
 }
 
 CSocketManagerUdp::~CSocketManagerUdp() // OK
@@ -92,16 +89,20 @@ bool CSocketManagerUdp::Connect(char* IpAddress,WORD port) // OK
 	return 1;
 }
 
-void CSocketManagerUdp::Clean() // OK
+void CSocketManagerUdp::Clean()
 {
-	if(this->m_ServerRecvThread != 0)
+	if (this->m_ServerRecvThread != 0)
 	{
-		TerminateThread(this->m_ServerRecvThread,0);
+		static bool isThreadRunning = true;
+		isThreadRunning = false;
+
+		WaitForSingleObject(this->m_ServerRecvThread, INFINITE);
+
 		CloseHandle(this->m_ServerRecvThread);
 		this->m_ServerRecvThread = 0;
 	}
 
-	if(this->m_socket != INVALID_SOCKET)
+	if (this->m_socket != INVALID_SOCKET)
 	{
 		closesocket(this->m_socket);
 		this->m_socket = INVALID_SOCKET;

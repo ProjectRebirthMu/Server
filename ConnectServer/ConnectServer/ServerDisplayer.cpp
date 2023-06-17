@@ -15,25 +15,25 @@ CServerDisplayer gServerDisplayer;
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
-CServerDisplayer::CServerDisplayer() // OK
+CServerDisplayer::CServerDisplayer()
 {
 	memset(&this->m_log, 0, sizeof(this->m_log));
 
 	this->m_fonttitle = CreateFont(
-		50,                           // Tamanho da fonte
-		0,                            // Largura da fonte (0 para o padrão)
-		0,                            // Angulo de inclinação da fonte (0 para o padrão)
-		0,                            // Ângulo de orientação da fonte (0 para o padrão)
-		FW_BOLD,                      // Peso da fonte (bold)
-		TRUE,                         // Itálico (TRUE para ativar, FALSE para desativar)
-		FALSE,                        // Sublinhado (TRUE para ativar, FALSE para desativar)
-		0,                            // Tachado (0 para desativar)
-		ANSI_CHARSET,                 // Conjunto de caracteres (ANSI)
-		OUT_DEFAULT_PRECIS,           // Precisão de saída
-		CLIP_DEFAULT_PRECIS,          // Precisão de recorte
-		DEFAULT_QUALITY,              // Qualidade da fonte
-		DEFAULT_PITCH | FF_DONTCARE,  // Estilo de pitch e família da fonte
-		"Roboto"                      // Nome da fonte
+		50,                           // Font size
+		0,                            // Font width (0 for default)
+		0,                            // Font italic angle (0 for default)
+		0,                            // Font orientation angle (0 for default)
+		FW_BOLD,                      // Font weight (bold)
+		TRUE,                         // Font italic (TRUE to enable, FALSE to disable)
+		FALSE,                        // Font underline (TRUE to enable, FALSE to disable)
+		0,                            // Font strikeout (0 to disable)
+		ANSI_CHARSET,                 // Character set (ANSI)
+		OUT_DEFAULT_PRECIS,           // Output precision
+		CLIP_DEFAULT_PRECIS,          // Clipping precision
+		DEFAULT_QUALITY,              // Font quality
+		DEFAULT_PITCH | FF_DONTCARE,  // Pitch and font family style
+		"Roboto"                      // Font name
 	);
 
 	this->m_brush = CreateSolidBrush(RGB(21, 24, 43));
@@ -85,58 +85,47 @@ void CServerDisplayer::PaintAllInfo() // OK
 	ReleaseDC(this->m_hwnd, hdc);
 }
 
-void CServerDisplayer::LogTextPaint() // OK
+void CServerDisplayer::LogTextPaint()
 {
 	RECT rect;
-
 	GetClientRect(this->m_hwnd, &rect);
-
 	rect.top = -10;
 	rect.bottom = 500;
 
 	HDC hdc = GetDC(this->m_hwnd);
-
-	FillRect(hdc, &rect, (HBRUSH)GetStockObject(4));
+	FillRect(hdc, &rect, (HBRUSH)GetStockObject(BLACK_BRUSH));
 
 	int line = MAX_LOG_TEXT_LINE;
-
 	int count = (((this->m_count - 1) >= 0) ? (this->m_count - 1) : (MAX_LOG_TEXT_LINE - 1));
 
 	for (int n = 0; n < MAX_LOG_TEXT_LINE; n++)
 	{
+		COLORREF textColor;
 		switch (this->m_log[count].color)
 		{
 		case LOG_BLACK:
-			SetTextColor(hdc, RGB(192, 192, 192));
-			SetBkMode(hdc, TRANSPARENT);
+			textColor = RGB(192, 192, 192);
 			break;
 		case LOG_RED:
-			SetTextColor(hdc, RGB(255, 0, 0));
-			SetBkMode(hdc, TRANSPARENT);
+			textColor = RGB(255, 0, 0);
 			break;
 		case LOG_GREEN:
-			SetTextColor(hdc, RGB(110, 255, 0));
-			SetBkMode(hdc, TRANSPARENT);
+			textColor = RGB(110, 255, 0);
 			break;
 		case LOG_BLUE:
-			SetTextColor(hdc, RGB(0, 110, 255));
-			SetBkMode(hdc, TRANSPARENT);
+			textColor = RGB(0, 110, 255);
 			break;
 		case LOG_ORANGE:
-			SetTextColor(hdc, RGB(255, 110, 0));
-			SetBkMode(hdc, TRANSPARENT);
+			textColor = RGB(255, 110, 0);
 			break;
 		case LOG_PURPLE:
-			SetTextColor(hdc, RGB(160, 70, 160));
-			SetBkMode(hdc, TRANSPARENT);
+			textColor = RGB(160, 70, 160);
 			break;
 		case LOG_PINK:
-			SetTextColor(hdc, RGB(255, 0, 128));
-			SetBkMode(hdc, TRANSPARENT);
+			textColor = RGB(255, 0, 128);
 			break;
 		case LOG_YELLOW:
-			SetTextColor(hdc, RGB(255, 240, 0));
-			SetBkMode(hdc, TRANSPARENT);
+			textColor = RGB(255, 240, 0);
 			break;
 		}
 
@@ -148,6 +137,8 @@ void CServerDisplayer::LogTextPaint() // OK
 			textRect.right = rect.right;
 			textRect.top = 65 + ((line - 1) * 15);
 			textRect.bottom = textRect.top + 15;
+			SetTextColor(hdc, textColor);
+			SetBkMode(hdc, TRANSPARENT);
 			DrawTextA(hdc, m_log[count].text, size, &textRect, DT_CENTER);
 			--line;
 		}

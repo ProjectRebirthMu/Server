@@ -52,11 +52,11 @@ bool CSocketManager::Start(WORD port)
 	return true;
 }
 
-void CSocketManager::Clean()
+void CSocketManager::Clean() // OK
 {
 	if (this->m_ServerQueueThread != 0)
 	{
-		TerminateThread(this->m_ServerQueueThread, 0);
+		WaitForSingleObject(this->m_ServerQueueThread, INFINITE);
 		CloseHandle(this->m_ServerQueueThread);
 		this->m_ServerQueueThread = 0;
 	}
@@ -72,7 +72,7 @@ void CSocketManager::Clean()
 	{
 		if (this->m_ServerWorkerThread[n] != 0)
 		{
-			TerminateThread(this->m_ServerWorkerThread[n], 0);
+			WaitForSingleObject(this->m_ServerWorkerThread[n], INFINITE);
 			CloseHandle(this->m_ServerWorkerThread[n]);
 			this->m_ServerWorkerThread[n] = 0;
 		}
@@ -80,7 +80,7 @@ void CSocketManager::Clean()
 
 	if (this->m_ServerAcceptThread != 0)
 	{
-		TerminateThread(this->m_ServerAcceptThread, 0);
+		WaitForSingleObject(this->m_ServerAcceptThread, INFINITE);
 		CloseHandle(this->m_ServerAcceptThread);
 		this->m_ServerAcceptThread = 0;
 	}
@@ -100,9 +100,9 @@ void CSocketManager::Clean()
 
 bool CSocketManager::CreateListenSocket() // OK
 {
-	if((this->m_listen=WSASocket(AF_INET,SOCK_STREAM,0,0,0,WSA_FLAG_OVERLAPPED)) == INVALID_SOCKET)
+	if ((this->m_listen = WSASocketW(AF_INET, SOCK_STREAM, 0, 0, 0, WSA_FLAG_OVERLAPPED)) == INVALID_SOCKET)
 	{
-		LogAdd(LOG_RED,"[SocketManager] WSASocket() failed with error: %d",WSAGetLastError());
+		LogAdd(LOG_RED, "[SocketManager] WSASocketW() failed with error: %d", WSAGetLastError());
 		return 0;
 	}
 
@@ -129,7 +129,7 @@ bool CSocketManager::CreateListenSocket() // OK
 
 bool CSocketManager::CreateCompletionPort()
 {
-	SOCKET socket = WSASocket(AF_INET, SOCK_STREAM, IPPROTO_IP, NULL, 0, WSA_FLAG_OVERLAPPED);
+	SOCKET socket = WSASocketW(AF_INET, SOCK_STREAM, IPPROTO_IP, NULL, 0, WSA_FLAG_OVERLAPPED);
 	if (socket == INVALID_SOCKET)
 	{
 		LogAdd(LOG_RED, "Erro: Não foi possível criar o socket. Código de erro: %d", WSAGetLastError());
