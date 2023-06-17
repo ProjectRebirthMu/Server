@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
-    <ProjectConfiguration Include="Release_EX502|Win32">
-      <Configuration>Release_EX502</Configuration>
+    <ProjectConfiguration Include="(ConnectServer)Release_EX603|Win32">
+      <Configuration>(ConnectServer)Release_EX603</Configuration>
       <Platform>Win32</Platform>
     </ProjectConfiguration>
   </ItemGroup>
@@ -10,9 +10,10 @@
     <ProjectGuid>{206DE6CA-4B65-4027-B96D-69DBC02AEF53}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>ConnectServer</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_EX502|Win32'" Label="Configuration">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='(ConnectServer)Release_EX603|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <WholeProgramOptimization>true</WholeProgramOptimization>
@@ -22,18 +23,18 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
   </ImportGroup>
-  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release_EX502|Win32'" Label="PropertySheets">
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='(ConnectServer)Release_EX603|Win32'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_EX502|Win32'">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='(ConnectServer)Release_EX603|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>$(SolutionDir)Release\ConnectServer_EX401\</OutDir>
-    <IntDir>Release\ConnectServer_EX401\</IntDir>
+    <OutDir>..\Release\ConnectServer_EX603\</OutDir>
+    <IntDir>Release\ConnectServer_EX603\</IntDir>
     <IncludePath>C:\Users\Patrick\Documents\MMORPG\Source Server\ConnectServer\Dependences\curl-master\include;$(IncludePath)</IncludePath>
     <LibraryPath>C:\Users\Patrick\Documents\MMORPG\Source Server\ConnectServer\Dependences\curl-master\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release_EX502|Win32'">
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='(ConnectServer)Release_EX603|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -93,7 +94,7 @@
     <ClCompile Include="SocketManager.cpp" />
     <ClCompile Include="SocketManagerUdp.cpp" />
     <ClCompile Include="stdafx.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_EX502|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='(ConnectServer)Release_EX603|Win32'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Util.cpp" />
   </ItemGroup>

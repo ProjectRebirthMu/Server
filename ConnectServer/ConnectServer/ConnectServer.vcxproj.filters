@@ -16,6 +16,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="ReadMe.txt" />
+    <None Include="ConnectServer.ico">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="small.ico">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -135,10 +141,10 @@
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="Rebirth.ico">
+    <Image Include="..\..\Util\icone.ico">
       <Filter>Resource Files</Filter>
     </Image>
-    <Image Include="Rebirth_Small.ico">
+    <Image Include="MU.gif">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>
