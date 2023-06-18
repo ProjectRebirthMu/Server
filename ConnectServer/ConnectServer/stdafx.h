@@ -5,14 +5,10 @@
 
 #define _WIN32_WINNT _WIN32_WINNT_WINXP
 
-#define VERSION "1.0.0.1"
+constexpr const char* VERSION = "1.0.0.2";
 
-#define CONNECTSERVER_VERSION "CS"
-#define CONNECTSERVER_CLIENT "LOUIS MS EMULATOR"
-
-#ifndef CONNECTSERVER_UPDATE
-#define CONNECTSERVER_UPDATE 803
-#endif
+constexpr const char* CONNECTSERVER_VERSION = "CS";
+constexpr const char* CONNECTSERVER_CLIENT = "[Main.exe] OpenSource";
 
 #ifndef PROTECT_STATE
 #define PROTECT_STATE 0

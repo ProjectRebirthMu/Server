@@ -30,6 +30,7 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
 IDI_CONNECTSERVER       ICON                    "Rebirth.ico"
+
 IDI_SMALL               ICON                    "Rebirth_Small.ico"
 
 
@@ -183,8 +184,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 1,0,0,1
- PRODUCTVERSION 1,0,0,1
+ FILEVERSION 1,0,0,2
+ PRODUCTVERSION 1,0,0,2
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -201,12 +202,12 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "ProjectRebirthMu"
             VALUE "FileDescription", "ConnectServer"
-            VALUE "FileVersion", "1.0.0.1"
+            VALUE "FileVersion", "1.0.0.2"
             VALUE "InternalName", "ConnectServer"
             VALUE "LegalCopyright", "Copyright © 2023"
             VALUE "OriginalFilename", "ConnectServer.exe"
             VALUE "ProductName", "ConnectServer"
-            VALUE "ProductVersion", "1.0.0.1"
+            VALUE "ProductVersion", "1.0.0.2"
         END
     END
     BLOCK "VarFileInfo"
@@ -214,6 +215,16 @@ BEGIN
         VALUE "Translation", 0x409, 1200
     END
 END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Bitmap
+//
+
+IDB_BITMAP1             BITMAP                  "IMAGE.bmp"
+
+IDB_BITMAP2             BITMAP                  "ConnectServer.bmp"
 
 #endif    // Português (Brasil) resources
 /////////////////////////////////////////////////////////////////////////////

@@ -48,7 +48,7 @@ bool CSocketManager::Start(WORD port)
 
 	PROTECT_FINAL
 
-		LogAdd(LOG_BLACK, "O servidor foi iniciado na porta [%d].", this->m_port);
+		LogAdd(LOG_BLUE, "O servidor foi iniciado na porta [%d].", this->m_port);
 	return true;
 }
 

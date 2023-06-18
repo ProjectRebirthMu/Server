@@ -46,57 +46,57 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 	gServerDisplayer.Init(hWnd);
 
 	WSADATA wsa;
-	int wsaStartupResult = WSAStartup(MAKEWORD(2, 2), &wsa);
-	if (wsaStartupResult != 0)
+
+	if (WSAStartup(MAKEWORD(2, 2), &wsa) == 0)
 	{
-		LogAdd(LOG_RED, "WSAStartup() failed with error: %d", wsaStartupResult);
-		CMiniDump::Clean();
-		VM_END
-			return 0;
-	}
+		WORD ConnectServerPortTCP = GetPrivateProfileInt("ConnectServerInfo", "ConnectServerPortTCP", 44405, ".\\ConnectServer.ini");
 
-	WORD ConnectServerPortTCP = GetPrivateProfileInt("ConnectServerInfo", "ConnectServerPortTCP", 44405, ".\\ConnectServer.ini");
-	WORD ConnectServerPortUDP = GetPrivateProfileInt("ConnectServerInfo", "ConnectServerPortUDP", 55557, ".\\ConnectServer.ini");
-	GetPrivateProfileString("ConnectServerInfo", "Version", "", Version, sizeof(Version), ".\\ConnectServer.ini");
-	MaxIpConnection = GetPrivateProfileInt("ConnectServerInfo", "MaxIpConnection", 0, ".\\ConnectServer.ini");
+		WORD ConnectServerPortUDP = GetPrivateProfileInt("ConnectServerInfo", "ConnectServerPortUDP", 55557, ".\\ConnectServer.ini");
 
-	if (gSocketManager.Start(ConnectServerPortTCP) == 0 || gSocketManagerUdp.Start(ConnectServerPortUDP) == 0)
-	{
-		CMiniDump::Clean();
-		VM_END
-			return 0;
-	}
+		GetPrivateProfileString("ConnectServerInfo", "Version", "", Version, sizeof(Version), ".\\ConnectServer.ini");
 
-	gServerList.Load("ServerList.xml");
-	SetTimer(hWnd, TIMER_1000, 1000, 0);
-	SetTimer(hWnd, TIMER_5000, 5000, 0);
-	gServerDisplayer.PaintAllInfo();
-	SetTimer(hWnd, TIMER_2000, 2000, 0);
+		MaxIpConnection = GetPrivateProfileInt("ConnectServerInfo", "MaxIpConnection", 0, ".\\ConnectServer.ini");
 
-	HACCEL hAccelTable = LoadAccelerators(hInstance, (LPCTSTR)IDC_CONNECTSERVER);
-	MSG msg;
-
-	while (true)
-	{
-		if (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
+		if (gSocketManager.Start(ConnectServerPortTCP) != 0 && gSocketManagerUdp.Start(ConnectServerPortUDP) != 0)
 		{
-			if (msg.message == WM_QUIT)
-				break;
+			gServerList.Load("ServerList.xml");
 
-			if (TranslateAccelerator(msg.hwnd, hAccelTable, &msg) == 0)
+			SetTimer(hWnd, TIMER_1000, 1000, 0);
+
+			SetTimer(hWnd, TIMER_5000, 5000, 0);
+
+			SetTimer(hWnd, TIMER_2000, 2000, 0);
+
+			HACCEL hAccelTable = LoadAccelerators(hInstance, (LPCTSTR)IDC_CONNECTSERVER);
+
+			MSG msg;
+
+			while (GetMessage(&msg, 0, 0, 0) != 0)
 			{
-				TranslateMessage(&msg);
-				DispatchMessageA(&msg);
+				if (TranslateAccelerator(msg.hwnd, hAccelTable, &msg) == 0)
+				{
+					TranslateMessage(&msg);
+					DispatchMessageA(&msg);
+				}
 			}
+
+			CMiniDump::Clean();
+
+			VM_END
+
+				return msg.wParam;
 		}
-		else
-		{
-		}
+	}
+	else
+	{
+		LogAdd(LOG_RED, "WSAStartup() failed with error: %d", WSAGetLastError());
 	}
 
 	CMiniDump::Clean();
+
 	VM_END
-		return static_cast<int>(msg.wParam);
+
+		return 0;
 }
 
 ATOM MyRegisterClass(HINSTANCE hInstance)
@@ -184,7 +184,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		}
 	}
 	break;
-	case WM_CLOSE: // Added case for WM_CLOSE message
+	case WM_CLOSE:
 		if (MessageBox(hWnd, "Are you sure to terminate ConnectServer?", "Ask terminate server", MB_YESNO | MB_ICONQUESTION) == IDYES)
 		{
 			DestroyWindow(hWnd);
@@ -204,9 +204,23 @@ LRESULT CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 	switch (message)
 	{
 	case WM_INITDIALOG:
+	{
 		SetDlgItemText(hDlg, IDC_VERSION, TEXT(VERSION));
-		SetDlgItemText(hDlg, IDC_EXPIREDATE, TEXT("09/09/2099"));
+
+		// Obter a data atual
+		SYSTEMTIME currentDate;
+		GetLocalTime(&currentDate);
+
+		// Incrementar o dia atual em 1
+		currentDate.wDay++;
+
+		// Converter a nova data para uma string no formato "dd/MM/yyyy"
+		TCHAR expirationDate[11]; // Tamanho para armazenar "dd/MM/yyyy" + o caractere nulo
+		_stprintf_s(expirationDate, _T("%02d/%02d/%04d"), currentDate.wDay, currentDate.wMonth, currentDate.wYear);
+
+		SetDlgItemText(hDlg, IDC_EXPIREDATE, expirationDate);
 		return TRUE;
+	}
 
 	case WM_COMMAND:
 		if (LOWORD(wParam) == IDOK || LOWORD(wParam) == IDCANCEL)

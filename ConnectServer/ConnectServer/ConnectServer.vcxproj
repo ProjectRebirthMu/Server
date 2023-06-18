@@ -103,7 +103,10 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\..\Util\icone.ico" />
-    <Image Include="MU.gif" />
+    <Image Include="ConnectServer.bmp" />
+    <Image Include="IMAGE.bmp" />
+    <Image Include="Rebirth.ico" />
+    <Image Include="Rebirth_Small.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

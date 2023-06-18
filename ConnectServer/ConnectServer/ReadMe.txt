@@ -56,6 +56,8 @@ StdAfx.h, StdAfx.cpp
 /////////////////////////////////////////////////////////////////////////////
 Other notes:
 
+The "Rebirth :: ConnectServer - XML" text was created with font used: Inversionz Regular
+
 AppWizard uses "TODO:" comments to indicate parts of the source code you
 should add to or customize.
 
