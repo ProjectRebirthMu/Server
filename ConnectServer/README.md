@@ -9,4 +9,4 @@ In this version, the following improvements have been made:
 - Improved memory consumption, resulting in optimized performance.
 - Enhanced visual appearance for a more appealing user interface.
 
-(https://i.ibb.co/W28zNzh/Rebirth.png)
+![MuOnline](https://i.ibb.co/W28zNzh/Rebirth.png)
