@@ -2,7 +2,7 @@
 
 Este repositório contém os arquivos necessários para executar o servidor do MuOnline na versão Season 6.3. Ele inclui os seguintes componentes essenciais: ConnectServer, DataServer, GameServer e JoinServer.
 
-![MuOnline](https://i.ibb.co/7jg1h4C/Rebirth.png)
+![MuOnline](https://i.ibb.co/NNLms2n/Rebirth-Pack-Free.jpg)
 
 ## Requisitos
 
