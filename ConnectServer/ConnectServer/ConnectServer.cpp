@@ -92,11 +92,26 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 		LogAdd(LOG_RED, "WSAStartup() failed with error: %d", WSAGetLastError());
 	}
 
+	SetTimer(hWnd, TIMER_2000, 2000, 0);
+
+	HACCEL hAccelTable = LoadAccelerators(hInstance, (LPCTSTR)IDC_CONNECTSERVER);
+
+	MSG msg;
+
+	while (GetMessage(&msg, 0, 0, 0) != 0)
+	{
+		if (TranslateAccelerator(msg.hwnd, hAccelTable, &msg) == 0)
+		{
+			TranslateMessage(&msg);
+			DispatchMessageA(&msg);
+		}
+	}
+
 	CMiniDump::Clean();
 
 	VM_END
 
-		return 0;
+	return msg.wParam;
 }
 
 ATOM MyRegisterClass(HINSTANCE hInstance)
@@ -138,54 +153,40 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 	return TRUE;
 }
 
-LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
+LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) // OK
 {
 	switch (message)
 	{
 	case WM_COMMAND:
-	{
-		int wmId = LOWORD(wParam);
-		switch (wmId)
+		switch (LOWORD(wParam))
 		{
 		case IDM_ABOUT:
-			DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, (DLGPROC)About);
+			DialogBox(hInst, (LPCTSTR)IDD_ABOUTBOX, hWnd, (DLGPROC)About);
 			break;
 		case IDM_EXIT:
-			if (MessageBox(hWnd, "Are you sure to terminate ConnectServer?", "Ask terminate server", MB_YESNO | MB_ICONQUESTION) == IDYES)
+			if (MessageBox(0, "Are you sure to terminate ConnectServer?", "Ask terminate server", MB_YESNO | MB_ICONQUESTION) == IDYES)
 			{
 				DestroyWindow(hWnd);
 			}
 			break;
-		case IDM_RELOAD_RELOADSERVERLIST:
-			gServerList.Load("ServerList.xml");
-			LogAdd(LOG_BLUE, "[ServerList] ServerList loaded successfully");
-			break;
 		default:
 			return DefWindowProc(hWnd, message, wParam, lParam);
 		}
-	}
-	break;
+		break;
 	case WM_TIMER:
-	{
-		int timerId = wParam;
-		switch (timerId)
+		switch (wParam)
 		{
 		case TIMER_1000:
-			gServerList.MainProc();
 			break;
 		case TIMER_2000:
 			gServerDisplayer.Run();
 			break;
-		case TIMER_5000:
-			ConnectServerTimeoutProc();
-			break;
 		default:
 			break;
 		}
-	}
-	break;
+		break;
 	case WM_CLOSE:
-		if (MessageBox(hWnd, "Are you sure to terminate ConnectServer?", "Ask terminate server", MB_YESNO | MB_ICONQUESTION) == IDYES)
+		if (MessageBox(0, "Close ConnectServer?", "ConnectServer", MB_OKCANCEL) == IDOK)
 		{
 			DestroyWindow(hWnd);
 		}
@@ -196,6 +197,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	default:
 		return DefWindowProc(hWnd, message, wParam, lParam);
 	}
+
 	return 0;
 }
 
@@ -233,4 +235,3 @@ LRESULT CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 
 	return FALSE;
 }
-

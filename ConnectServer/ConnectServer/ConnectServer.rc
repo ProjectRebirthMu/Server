@@ -226,6 +226,7 @@ IDB_BITMAP1             BITMAP                  "IMAGE.bmp"
 
 IDB_BITMAP2             BITMAP                  "ConnectServer.bmp"
 
+
 #endif    // Português (Brasil) resources
 /////////////////////////////////////////////////////////////////////////////
 

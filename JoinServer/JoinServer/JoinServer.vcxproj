@@ -100,6 +100,8 @@
     <ResourceCompile Include="JoinServer.rc" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="IMAGE.bmp" />
+    <Image Include="JoinServer.bmp" />
     <Image Include="Rebirth.ico" />
     <Image Include="Rebirth_Small.ico" />
   </ItemGroup>

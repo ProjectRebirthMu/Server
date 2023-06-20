@@ -105,8 +105,6 @@ int APIENTRY WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstance,LPSTR lpCmdLine
 		LogAdd(LOG_RED,"WSAStartup() failed with error: %d",WSAGetLastError());
 	}
 
-	gServerDisplayer.PaintAllInfo();
-
 	SetTimer(hWnd,TIMER_2000,2000,0);
 
 	HACCEL hAccelTable = LoadAccelerators(hInstance,(LPCTSTR)IDC_DATASERVER);
@@ -224,9 +222,24 @@ LRESULT CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 	switch (message)
 	{
 	case WM_INITDIALOG:
-		SetDlgItemText(hDlg, IDC_VERSION, VERSION);
-		SetDlgItemText(hDlg, IDC_EXPIREDATE, "09/09/2099");
+	{
+		SetDlgItemText(hDlg, IDC_VERSION, TEXT(VERSION));
+
+		// Obter a data atual
+		SYSTEMTIME currentDate;
+		GetLocalTime(&currentDate);
+
+		// Incrementar o dia atual em 1
+		currentDate.wDay++;
+
+		// Converter a nova data para uma string no formato "dd/MM/yyyy"
+		TCHAR expirationDate[11]; // Tamanho para armazenar "dd/MM/yyyy" + o caractere nulo
+		_stprintf_s(expirationDate, _T("%02d/%02d/%04d"), currentDate.wDay, currentDate.wMonth, currentDate.wYear);
+
+		SetDlgItemText(hDlg, IDC_EXPIREDATE, expirationDate);
 		return TRUE;
+	}
+
 	case WM_COMMAND:
 		if (LOWORD(wParam) == IDOK || LOWORD(wParam) == IDCANCEL)
 		{
@@ -235,5 +248,6 @@ LRESULT CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 		}
 		break;
 	}
+
 	return FALSE;
 }

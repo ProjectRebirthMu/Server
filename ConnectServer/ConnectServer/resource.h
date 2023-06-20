@@ -16,7 +16,6 @@
 #define IDC_VERSION                     111
 #define IDC_EXPIREDATE                  112
 #define IDR_MAINFRAME                   128
-#define IDC_IMAGE                       1001
 #define IDB_BITMAP1                     32767
 #define IDB_BITMAP2                     32768
 #define IDM_RELOAD_RELOADSERVERLIST     32771

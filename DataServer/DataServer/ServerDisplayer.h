@@ -4,7 +4,7 @@
 
 #pragma once
 
-#define MAX_LOG_TEXT_LINE 26
+#define MAX_LOG_TEXT_LINE 22
 #define MAX_LOG_TEXT_SIZE 80
 
 enum eLogColor
@@ -35,7 +35,7 @@ public:
 	void PaintStatusBar();
 	void PaintAllInfo();
 	void LogTextPaint();
-	void LogAddText(eLogColor color, char* text, int size);
+	void LogAddText(eLogColor color, const char* text, int size);
 private:
 	HWND m_hwnd;
 	HFONT m_font;

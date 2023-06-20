@@ -24,9 +24,9 @@ CommandChangeLimit_AL3 = 2
 ; Ware Command Settings
 ;==================================================
 CommandWareNumber_AL0 = 5
-CommandWareNumber_AL1 = 2
-CommandWareNumber_AL2 = 3
-CommandWareNumber_AL3 = 4
+CommandWareNumber_AL1 = 10
+CommandWareNumber_AL2 = 30
+CommandWareNumber_AL3 = 250
 
 ;==================================================
 ; Reset Command Settings

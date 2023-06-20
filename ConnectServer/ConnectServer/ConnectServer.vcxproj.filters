@@ -19,9 +19,6 @@
     <None Include="ConnectServer.ico">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="small.ico">
-      <Filter>Resource Files</Filter>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -141,9 +138,6 @@
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="..\..\Util\icone.ico">
-      <Filter>Resource Files</Filter>
-    </Image>
     <Image Include="Rebirth.ico">
       <Filter>Resource Files</Filter>
     </Image>

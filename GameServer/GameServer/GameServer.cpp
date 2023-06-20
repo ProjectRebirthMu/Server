@@ -55,7 +55,9 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 	gServerInfo.ReadStartupInfo("GameServerInfo", ".\\Data\\GameServerInfo - Common.dat");
 
 	char buff[256];
-	wsprintf(buff, "Loading files...");
+
+	wsprintf(buff, "%s | XML %s", GAMESERVER_VERSION, VERSION);
+
 	SetWindowText(hWnd, buff);
 
 	gServerDisplayer.Init(hWnd);
@@ -114,8 +116,6 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 
 	gQueueTimer.CreateTimer(QUEUE_TIMER_AUTH_COMMAND, 600000, &QueueTimerCallback);
 
-	gServerDisplayer.PaintAllInfo();
-
 	SetTimer(hWnd, WM_TIMER_2000, 2000, NULL);
 
 	HACCEL hAccelTable = LoadAccelerators(hInstance, (LPCTSTR)IDC_GAMESERVER);
@@ -162,29 +162,27 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
 	return TRUE;
 }
 
-BOOL InitInstance(HINSTANCE hInstance, int nCmdShow) // OK
+BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 {
 	hInst = hInstance;
+	hWnd = CreateWindow(szWindowClass, szTitle, WS_OVERLAPPED | WS_MINIMIZEBOX | WS_SYSMENU, CW_USEDEFAULT, 0, 800, 600, 0, 0, hInstance, 0);
 
-	hWnd = CreateWindow(szWindowClass, szTitle, WS_OVERLAPPED | WS_MINIMIZEBOX | WS_SYSMENU, CW_USEDEFAULT, 0, 900, 600, 0, 0, hInstance, 0);
-
-	if (hWnd == 0)
+	if (hWnd == NULL)
 	{
-		return 0;
+		return FALSE;
 	}
 
-	HWND hWndStatusBar;
-	hWndStatusBar = CreateWindowEx(0, STATUSCLASSNAME, NULL, WS_CHILD | WS_VISIBLE, 0, 0, 0, 0, hWnd, (HMENU)IDC_STATUSBAR, hInstance, NULL);
+	HWND hWndStatusBar = CreateWindowEx(0, STATUSCLASSNAME, NULL, WS_CHILD | WS_VISIBLE, 0, 0, 0, 0, hWnd, (HMENU)IDC_STATUSBAR, hInstance, NULL);
 	ShowWindow(hWndStatusBar, SW_HIDE);
 
-	int iQueueBarWidths[] = { 120,230,310,400,460,580,680, -1 };
+	int iQueueBarWidths[] = { 80, 180, 300, 400, 500, 600, -1 };
 
-	SendMessage(hWndStatusBar, SB_SETPARTS, 8, (LPARAM)iQueueBarWidths);
-
+	SendMessage(hWndStatusBar, SB_SETPARTS, 7, (LPARAM)iQueueBarWidths);
 	ShowWindow(hWnd, nCmdShow);
 	UpdateWindow(hWnd);
-	return 1;
+	return TRUE;
 }
+
 
 LRESULT CALLBACK WndProc(HWND hWnd,UINT message,WPARAM wParam,LPARAM lParam) // OK
 {
@@ -533,24 +531,39 @@ LRESULT CALLBACK WndProc(HWND hWnd,UINT message,WPARAM wParam,LPARAM lParam) // 
 	return 0;
 }
 
-LRESULT CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam) // OK
+LRESULT CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	switch (message)
 	{
 	case WM_INITDIALOG:
-		SetDlgItemText(hDlg, IDC_VERSION, VERSION);
-		SetDlgItemText(hDlg, IDC_EXPIREDATE, "09/09/2099");
-		return 1;
+	{
+		SetDlgItemText(hDlg, IDC_VERSION, TEXT(VERSION));
+
+		// Obter a data atual
+		SYSTEMTIME currentDate;
+		GetLocalTime(&currentDate);
+
+		// Incrementar o dia atual em 1
+		currentDate.wDay++;
+
+		// Converter a nova data para uma string no formato "dd/MM/yyyy"
+		TCHAR expirationDate[11]; // Tamanho para armazenar "dd/MM/yyyy" + o caractere nulo
+		_stprintf_s(expirationDate, _T("%02d/%02d/%04d"), currentDate.wDay, currentDate.wMonth, currentDate.wYear);
+
+		SetDlgItemText(hDlg, IDC_EXPIREDATE, expirationDate);
+		return TRUE;
+	}
+
 	case WM_COMMAND:
 		if (LOWORD(wParam) == IDOK || LOWORD(wParam) == IDCANCEL)
 		{
 			EndDialog(hDlg, LOWORD(wParam));
-			return 1;
+			return TRUE;
 		}
 		break;
 	}
 
-	return 0;
+	return FALSE;
 }
 
 LRESULT CALLBACK UserOnline(HWND hDlg,UINT message,WPARAM wParam,LPARAM lParam) // OK

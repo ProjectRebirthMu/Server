@@ -16,6 +16,8 @@
 #define IDC_VERSION                     111
 #define IDC_EXPIREDATE                  112
 #define IDR_MAINFRAME                   128
+#define IDB_BITMAP1                     32767
+#define IDB_BITMAP2                     32768
 #define IDC_STATIC                      -1
 
 // Next default values for new objects

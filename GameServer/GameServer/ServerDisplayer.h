@@ -4,7 +4,7 @@
 
 #pragma once
 
-#define MAX_LOG_TEXT_LINE 15
+#define MAX_LOG_TEXT_LINE 12
 #define MAX_LOG_TEXT_SIZE 100
 
 #define MAX_LOGCONNECT_TEXT_LINE 13
@@ -56,20 +56,12 @@ public:
 	virtual ~CServerDisplayer();
 	void Init(HWND hWnd);
 	void Run();
-	void SetWindowName();
 	void PaintAllInfo();
 	void LogTextPaint();
-	void LogTextPaintConnect();
 	void LogTextPaintGlobalMessage();
-	void PaintEventTime();
-	void PaintInvasionTime();
-	void PaintCustomArenaTime(); 
-	void LogAddText(eLogColor color,char* text,int size);
+	void LogAddText(eLogColor color,const char* text,int size);
 	void LogAddTextConnect(eLogColor color,char* text,int size);
 	void LogAddTextGlobal(eLogColor color,char* text,int size);
-	void PaintOnline();
-	void PaintPremium();
-	void PaintSeason();
 	int EventBc;
 	int EventDs;
 	int EventCc;
@@ -93,10 +85,6 @@ public:
 private:
 	HWND m_hwnd;
 	HFONT m_fonttitle;
-	HFONT m_font2;
-	HFONT m_font3;
-	HBRUSH m_brush;
-	HBRUSH m_brush2;
 	LOG_DISPLAY_INFO m_log[MAX_LOG_TEXT_LINE];
 	LOGCONNECT_DISPLAY_INFO m_logConnect[MAX_LOGCONNECT_TEXT_LINE];
 	LOGGLOBAL_DISPLAY_INFO m_logGlobal[MAX_LOGGLOBAL_TEXT_LINE];
@@ -104,9 +92,6 @@ private:
 	int m_count;
 	int m_countConnect;
 	int m_countGlobal;
-	char m_DisplayerText[64];
-	char m_DisplayerText1[64];
-	char m_DisplayerText2[64];
 };
 
 extern CServerDisplayer gServerDisplayer;

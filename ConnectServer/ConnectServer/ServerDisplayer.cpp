@@ -15,13 +15,14 @@ CServerDisplayer gServerDisplayer;
 
 CServerDisplayer::CServerDisplayer()
 {
-    memset(this->m_log, 0, sizeof(this->m_log));
+    for (int n = 0; n < MAX_LOG_TEXT_LINE; n++)
+    {
+        memset(&this->m_log[n], 0, sizeof(this->m_log[n]));
+    }
 }
 
 CServerDisplayer::~CServerDisplayer()
 {
-    DeleteObject(static_cast<HGDIOBJ>(this->m_fonttitle));
-    DeleteObject(static_cast<HGDIOBJ>(this->m_brush));
 }
 
 void CServerDisplayer::Init(HWND hWnd)
@@ -99,9 +100,7 @@ void CServerDisplayer::LogTextPaint()
             break;
         case LOG_ORANGE:
             textColor = RGB(255, 110, 0);
-            break
-
-                ;
+            break;
         case LOG_PURPLE:
             textColor = RGB(160, 70, 160);
             break;

@@ -1,17 +1,14 @@
 #pragma once
 
 #define WIN32_LEAN_AND_MEAN
+#define _WINSOCK_DEPRECATED_NO_WARNINGS
 
 #define _WIN32_WINNT _WIN32_WINNT_WINXP
 
-#define VERSION "1.0.0.1"
+constexpr const char* VERSION = "1.0.0.2";
 
-#define DATASERVER_VERSION "DS"
-#define DATASERVER_CLIENT "LOUIS MS EMULATOR"
-
-#ifndef DATASERVER_UPDATE
-#define DATASERVER_UPDATE 803
-#endif
+constexpr const char* DATASERVER_VERSION = "DS";
+constexpr const char* DATASERVER_CLIENT = "[Main.exe] OpenSource";
 
 #ifndef PROTECT_STATE
 #define PROTECT_STATE 1

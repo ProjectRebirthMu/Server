@@ -176,6 +176,8 @@
     <ResourceCompile Include="DataServer.rc" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="DataServer.bmp" />
+    <Image Include="IMAGE.bmp" />
     <Image Include="Rebirth.ico" />
     <Image Include="Rebirth_Small.ico" />
   </ItemGroup>

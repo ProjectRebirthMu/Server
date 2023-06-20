@@ -291,5 +291,11 @@
     <Image Include="Rebirth_Small.ico">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="DataServer.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="IMAGE.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>

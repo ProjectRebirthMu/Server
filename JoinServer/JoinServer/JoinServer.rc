@@ -75,7 +75,7 @@ CAPTION "Sobre..."
 FONT 8, "Tahoma", 400, 0, 0x0
 BEGIN
 ICON            IDI_JOINSERVER, IDC_MYICON, 14, 9, 20, 20
-LTEXT           "DataServer", IDC_STATIC, 49, 10, 119, 8, SS_NOPREFIX
+LTEXT           "JoinServer", IDC_STATIC, 49, 10, 119, 8, SS_NOPREFIX
 DEFPUSHBUTTON   "OK", IDOK, 181, 60, 30, 11, WS_GROUP
 GROUPBOX        "", IDC_STATIC, 6, 2, 204, 30
 CTEXT           "Copyright© 2023", IDC_STATIC, 7, 48, 201, 8
@@ -168,8 +168,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 1,0,0,0
- PRODUCTVERSION 1,0,0,0
+ FILEVERSION 1,0,0,2
+ PRODUCTVERSION 1,0,0,2
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -186,12 +186,12 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "ProjectRebirthMu"
             VALUE "FileDescription", "JoinServer"
-            VALUE "FileVersion", "1.0.0.1"
+            VALUE "FileVersion", "1.0.0.2"
             VALUE "InternalName", "JoinServer"
             VALUE "LegalCopyright", "Copyright © 2023"
             VALUE "OriginalFilename", "JoinServer.exe"
             VALUE "ProductName", "JoinServer"
-            VALUE "ProductVersion", "1.0.0.1"
+            VALUE "ProductVersion", "1.0.0.2"
         END
     END
     BLOCK "VarFileInfo"
@@ -199,6 +199,16 @@ BEGIN
         VALUE "Translation", 0x409, 1200
     END
 END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Bitmap
+//
+
+IDB_BITMAP1             BITMAP                  "IMAGE.bmp"
+
+IDB_BITMAP2             BITMAP                  "JoinServer.bmp"
 
 #endif    // Portuguese (Brazil) resources
 /////////////////////////////////////////////////////////////////////////////

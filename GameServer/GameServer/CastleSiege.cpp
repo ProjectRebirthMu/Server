@@ -849,7 +849,7 @@ int CCastleSiege::DataRequest()
 	{
 		bDbRequestData = TRUE;
 		m_dwDbDataLoadTickCount = GetTickCount();
-		LogAdd(LOG_RED,"[CastleSiege] CCastleSiege::DataRequest() - REQUEST DATA AGAIN");
+		LogAdd(LOG_YELLOW,"[CastleSiege] CCastleSiege::DataRequest() - REQUEST DATA AGAIN");
 	}
 
 	if(bDbRequestData != FALSE)

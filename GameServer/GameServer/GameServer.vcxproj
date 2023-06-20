@@ -651,6 +651,9 @@
     <ResourceCompile Include="GameServer.rc" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="GameServer.bmp" />
+    <Image Include="GameServerCS.bmp" />
+    <Image Include="IMAGE.bmp" />
     <Image Include="Rebirth.ico" />
     <Image Include="Rebirth_Small.ico" />
   </ItemGroup>

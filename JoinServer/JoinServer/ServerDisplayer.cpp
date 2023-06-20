@@ -23,31 +23,10 @@ CServerDisplayer::CServerDisplayer() // OK
 	{
 		memset(&this->m_log[n],0,sizeof(this->m_log[n]));
 	}
-
-	this->m_font = CreateFont(
-		50,                           // Tamanho da fonte
-		0,                            // Largura da fonte (0 para o padrão)
-		0,                            // Angulo de inclinação da fonte (0 para o padrão)
-		0,                            // Ângulo de orientação da fonte (0 para o padrão)
-		FW_BOLD,                      // Peso da fonte (bold)
-		TRUE,                         // Itálico (TRUE para ativar, FALSE para desativar)
-		FALSE,                        // Sublinhado (TRUE para ativar, FALSE para desativar)
-		0,                            // Tachado (0 para desativar)
-		ANSI_CHARSET,                 // Conjunto de caracteres (ANSI)
-		OUT_DEFAULT_PRECIS,           // Precisão de saída
-		CLIP_DEFAULT_PRECIS,          // Precisão de recorte
-		DEFAULT_QUALITY,              // Qualidade da fonte
-		DEFAULT_PITCH | FF_DONTCARE,  // Estilo de pitch e família da fonte
-		"Roboto"                      // Nome da fonte
-	);
-
-	this->m_brush = CreateSolidBrush(RGB(21, 24, 43));
 }
 
 CServerDisplayer::~CServerDisplayer() // OK
 {
-	DeleteObject(this->m_font);
-	DeleteObject(this->m_brush);
 }
 
 void CServerDisplayer::Init(HWND hWnd) // OK
@@ -65,108 +44,122 @@ void CServerDisplayer::Init(HWND hWnd) // OK
 
 void CServerDisplayer::Run() // OK
 {
-	this->PaintAllInfo();
 	this->LogTextPaint();
 	this->PaintStatusBar();
 }
 
-void CServerDisplayer::PaintAllInfo() // OK
+void CServerDisplayer::LogTextPaint()
 {
-	RECT rect;
+    RECT rect;
+    GetClientRect(this->m_hwnd, &rect);
+    HDC hdc = GetDC(this->m_hwnd);
 
-	GetClientRect(this->m_hwnd, &rect);
+    HBITMAP hBitmap1 = LoadBitmap(GetModuleHandle(NULL), MAKEINTRESOURCE(IDB_BITMAP1));
+    if (hBitmap1 != NULL)
+    {
+        HDC hdcMem1 = CreateCompatibleDC(hdc);
+        HBITMAP hBitmapOld1 = (HBITMAP)SelectObject(hdcMem1, hBitmap1);
 
-	rect.top = 0;
-	rect.bottom = 80;
+        BITMAP bitmap1;
+        GetObject(hBitmap1, sizeof(BITMAP), &bitmap1);
 
-	HDC hdc = GetDC(this->m_hwnd);
+        BitBlt(hdc, 0, 0, bitmap1.bmWidth, bitmap1.bmHeight, hdcMem1, 0, 0, SRCCOPY);
 
-	int OldBkMode = SetBkMode(hdc, TRANSPARENT);
-	HFONT OldFont = (HFONT)SelectObject(hdc, this->m_font);
+        SelectObject(hdcMem1, hBitmapOld1);
+        DeleteDC(hdcMem1);
+        DeleteObject(hBitmap1);
+    }
 
-	SetTextColor(hdc, RGB(255, 255, 255));
-	FillRect(hdc, &rect, this->m_brush);
-	strcpy_s(this->m_DisplayerText, "JoinServer | XML Ver: 1.0.0.1");
+    HBITMAP hBitmap2 = LoadBitmap(GetModuleHandle(NULL), MAKEINTRESOURCE(IDB_BITMAP2));
+    if (hBitmap2 != NULL)
+    {
+        HDC hdcMem2 = CreateCompatibleDC(hdc);
+        HBITMAP hBitmapOld2 = (HBITMAP)SelectObject(hdcMem2, hBitmap2);
 
-	TextOut(hdc, 55, 15, this->m_DisplayerText, strlen(this->m_DisplayerText));
+        BITMAP bitmap2;
+        GetObject(hBitmap2, sizeof(BITMAP), &bitmap2);
 
-	SelectObject(hdc, OldFont);
-	SetBkMode(hdc, OldBkMode);
-	ReleaseDC(this->m_hwnd, hdc);
-}
+        BitBlt(hdc, 0, 0, bitmap2.bmWidth, bitmap2.bmHeight, hdcMem2, 0, 0, SRCCOPY);
 
-void CServerDisplayer::LogTextPaint() // OK
-{
-	RECT rect;
+        SelectObject(hdcMem2, hBitmapOld2);
+        DeleteDC(hdcMem2);
+        DeleteObject(hBitmap2);
+    }
 
-	GetClientRect(this->m_hwnd, &rect);
+    int line = MAX_LOG_TEXT_LINE;
+    int count = (this->m_count - 1 >= 0) ? (this->m_count - 1) : (MAX_LOG_TEXT_LINE - 1);
 
-	rect.top = 100;
-	rect.bottom = 500;
+    for (int n = 0; n < MAX_LOG_TEXT_LINE; n++)
+    {
+        COLORREF textColor = RGB(192, 192, 192);
 
-	HDC hdc = GetDC(this->m_hwnd);
+        switch (this->m_log[count].color)
+        {
+        case LOG_BLACK:
+            textColor = RGB(192, 192, 192);
+            break;
+        case LOG_RED:
+            textColor = RGB(255, 0, 0);
+            break;
+        case LOG_GREEN:
+            textColor = RGB(110, 255, 0);
+            break;
+        case LOG_BLUE:
+            textColor = RGB(0, 110, 255);
+            break;
+        case LOG_ORANGE:
+            textColor = RGB(255, 110, 0);
+            break;
+        case LOG_PURPLE:
+            textColor = RGB(160, 70, 160);
+            break;
+        case LOG_PINK:
+            textColor = RGB(255, 0, 128);
+            break;
+        case LOG_YELLOW:
+            textColor = RGB(255, 240, 0);
+            break;
+        }
 
-	FillRect(hdc, &rect, (HBRUSH)GetStockObject(4));
+        const int size = lstrlenA(this->m_log[count].text);
+        if (size > 0)
+        {
+            RECT textRect;
+            textRect.left = rect.left;
+            textRect.right = rect.right;
+            textRect.top = 105 + ((line - 1) * 15);
+            textRect.bottom = textRect.top + 15;
 
-	int line = MAX_LOG_TEXT_LINE;
+            SetBkColor(hdc, RGB(18, 21, 38));
+            SetBkMode(hdc, OPAQUE);
 
-	int count = (((this->m_count - 1) >= 0) ? (this->m_count - 1) : (MAX_LOG_TEXT_LINE - 1));
+            SIZE textSize;
+            GetTextExtentPoint32A(hdc, this->m_log[count].text, size, &textSize);
 
-	for (int n = 0; n < MAX_LOG_TEXT_LINE; n++)
-	{
-		switch (this->m_log[count].color)
-		{
-		case LOG_BLACK:
-			SetTextColor(hdc, RGB(192, 192, 192));
-			SetBkMode(hdc, TRANSPARENT);
-			break;
-		case LOG_RED:
-			SetTextColor(hdc, RGB(255, 0, 0));
-			SetBkMode(hdc, TRANSPARENT);
-			break;
-		case LOG_GREEN:
-			SetTextColor(hdc, RGB(110, 255, 0));
-			SetBkMode(hdc, TRANSPARENT);
-			break;
-		case LOG_BLUE:
-			SetTextColor(hdc, RGB(0, 110, 255));
-			SetBkMode(hdc, TRANSPARENT);
-			break;
-		case LOG_ORANGE:
-			SetTextColor(hdc, RGB(255, 110, 0));
-			SetBkMode(hdc, TRANSPARENT);
-			break;
-		case LOG_PURPLE:
-			SetTextColor(hdc, RGB(160, 70, 160));
-			SetBkMode(hdc, TRANSPARENT);
-			break;
-		case LOG_PINK:
-			SetTextColor(hdc, RGB(255, 0, 128));
-			SetBkMode(hdc, TRANSPARENT);
-			break;
-		case LOG_YELLOW:
-			SetTextColor(hdc, RGB(255, 240, 0));
-			SetBkMode(hdc, TRANSPARENT);
-			break;
-		}
+            int rectWidth = textSize.cx + 2;
+            int rectHeight = textSize.cy + 2;
 
-		int size = strlen(this->m_log[count].text);
+            int rectLeft = (rect.right - rectWidth) / 2;
+            int rectTop = textRect.top;
 
-		if (size > 1)
-		{
-			RECT textRect;
-			textRect.left = rect.left;
-			textRect.right = rect.right;
-			textRect.top = 65 + ((line - 1) * 15);
-			textRect.bottom = textRect.top + 15;
-			DrawTextA(hdc, m_log[count].text, size, &textRect, DT_CENTER);
-			--line;
-		}
+            RECT backgroundRect = { rectLeft, rectTop, rectLeft + rectWidth, rectTop + rectHeight };
+            FillRect(hdc, &backgroundRect, CreateSolidBrush(RGB(18, 21, 38)));
 
-		count = (((--count) >= 0) ? count : (MAX_LOG_TEXT_LINE - 1));
-	}
+            SetTextColor(hdc, textColor);
+            SetBkMode(hdc, TRANSPARENT);
 
-	ReleaseDC(this->m_hwnd, hdc);
+            UINT textFormat = DT_CENTER | DT_SINGLELINE | DT_VCENTER;
+            DrawTextA(hdc, this->m_log[count].text, size, &textRect, textFormat);
+
+            --line;
+        }
+
+        --count;
+        if (count < 0)
+            count = MAX_LOG_TEXT_LINE - 1;
+    }
+
+    ReleaseDC(this->m_hwnd, hdc);
 }
 
 void CServerDisplayer::PaintStatusBar() // OK
@@ -214,21 +207,20 @@ void CServerDisplayer::PaintStatusBar() // OK
 	ShowWindow(hWndStatusBar, SW_SHOW);
 }
 
-void CServerDisplayer::LogAddText(eLogColor color,char* text,int size) // OK
+void CServerDisplayer::LogAddText(eLogColor color, const char* text, int size)
 {
-	PROTECT_START
+    PROTECT_START
+        size = min(size, MAX_LOG_TEXT_SIZE - 1);
 
-	size = ((size>=MAX_LOG_TEXT_SIZE)?(MAX_LOG_TEXT_SIZE-1):size);
+    memset(this->m_log[this->m_count].text, 0, sizeof(this->m_log[this->m_count].text));
 
-	memset(&this->m_log[this->m_count].text,0,sizeof(this->m_log[this->m_count].text));
+    memcpy(this->m_log[this->m_count].text, text, size);
 
-	memcpy(&this->m_log[this->m_count].text,text,size);
+    this->m_log[this->m_count].color = color;
 
-	this->m_log[this->m_count].color = color;
+    this->m_count = (++this->m_count >= MAX_LOG_TEXT_LINE) ? 0 : this->m_count;
 
-	this->m_count = (((++this->m_count)>=MAX_LOG_TEXT_LINE)?0:this->m_count);
+    PROTECT_FINAL
 
-	PROTECT_FINAL
-
-	gLog.Output(LOG_GENERAL,"%s",&text[9]);
+        gLog.Output(LOG_GENERAL, "%s", &text[9]);
 }

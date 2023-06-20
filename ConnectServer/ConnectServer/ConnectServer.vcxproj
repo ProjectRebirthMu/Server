@@ -54,7 +54,6 @@
   <ItemGroup>
     <None Include="ConnectServer.ico" />
     <None Include="ReadMe.txt" />
-    <None Include="small.ico" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ClientManager.h" />
@@ -102,7 +101,6 @@
     <ResourceCompile Include="ConnectServer.rc" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="..\..\Util\icone.ico" />
     <Image Include="ConnectServer.bmp" />
     <Image Include="IMAGE.bmp" />
     <Image Include="Rebirth.ico" />

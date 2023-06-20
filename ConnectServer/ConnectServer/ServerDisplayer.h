@@ -37,8 +37,6 @@ public:
 	void LogAddText(eLogColor color, const char* text, int size);
 private:
 	HWND m_hwnd;
-	HFONT m_fonttitle;
-	HBRUSH m_brush;
 	LOG_DISPLAY_INFO m_log[MAX_LOG_TEXT_LINE];
 	int m_count;
 	char m_DisplayerText[64];
