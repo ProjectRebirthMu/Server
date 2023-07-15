@@ -10,38 +10,34 @@ LPTOP_LEVEL_EXCEPTION_FILTER PreviousExceptionFilter = 0;
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
-LONG WINAPI DumpExceptionFilter(EXCEPTION_POINTERS* info) // OK
+LONG WINAPI DumpExceptionFilter(EXCEPTION_POINTERS* info)
 {
-	char path[MAX_PATH];
+    CHAR path[MAX_PATH];
+    SYSTEMTIME systemTime;
 
-	SYSTEMTIME SystemTime;
+    GetLocalTime(&systemTime);
 
-	GetLocalTime(&SystemTime);
+    wsprintf(path, "%d-%02d-%02d_%02dh%02dm%02ds.dmp", systemTime.wYear, systemTime.wMonth, systemTime.wDay,
+        systemTime.wHour, systemTime.wMinute, systemTime.wSecond);
 
-	wsprintf(path,"%d-%d-%d_%dh%dm%ds.dmp",SystemTime.wYear,SystemTime.wMonth,SystemTime.wDay,SystemTime.wHour,SystemTime.wMinute,SystemTime.wSecond);
+    HANDLE file = CreateFileA(path, GENERIC_WRITE, FILE_SHARE_WRITE, nullptr, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, nullptr);
 
-	HANDLE file = CreateFile(path,GENERIC_WRITE,FILE_SHARE_WRITE,0,CREATE_ALWAYS,FILE_ATTRIBUTE_NORMAL,0);
+    if (file != INVALID_HANDLE_VALUE)
+    {
+        MINIDUMP_EXCEPTION_INFORMATION mdei;
+        mdei.ThreadId = GetCurrentThreadId();
+        mdei.ExceptionPointers = info;
+        mdei.ClientPointers = FALSE;
 
-	if(file != INVALID_HANDLE_VALUE)
-	{
-		MINIDUMP_EXCEPTION_INFORMATION mdei;
+        if (MiniDumpWriteDump(GetCurrentProcess(), GetCurrentProcessId(), file, (MINIDUMP_TYPE)(MiniDumpScanMemory + MiniDumpWithIndirectlyReferencedMemory)
+            , &mdei, nullptr, nullptr))
+        {
+            CloseHandle(file);
+            return EXCEPTION_EXECUTE_HANDLER;
+        }
+    }
 
-		mdei.ThreadId = GetCurrentThreadId();
-
-		mdei.ExceptionPointers = info;
-
-		mdei.ClientPointers = 0;
-
-		if(MiniDumpWriteDump(GetCurrentProcess(),GetCurrentProcessId(),file,(MINIDUMP_TYPE)(MiniDumpScanMemory+MiniDumpWithIndirectlyReferencedMemory),&mdei,0,0) != 0)
-		{
-			CloseHandle(file);
-			return EXCEPTION_EXECUTE_HANDLER;
-		}
-	}
-
-	CloseHandle(file);
-
-	return EXCEPTION_CONTINUE_SEARCH;
+    return EXCEPTION_CONTINUE_SEARCH;
 }
 
 void CMiniDump::Start() // OK

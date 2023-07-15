@@ -11,14 +11,10 @@ CIpManager gIpManager;
 //////////////////////////////////////////////////////////////////////
 
 CIpManager::CIpManager() // OK
-{
-
-}
+{}
 
 CIpManager::~CIpManager() // OK
-{
-
-}
+{}
 
 bool CIpManager::CheckIpAddress(char* IpAddress)
 {

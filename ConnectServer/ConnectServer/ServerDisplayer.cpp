@@ -1,3 +1,8 @@
+// ServerDisplayer.cpp: implementation of the CServerDisplayer class.
+// Revisado: 14/07/23 16:29 GMT-3
+// By: Qubit
+//////////////////////////////////////////////////////////////////////
+
 #include "stdafx.h"
 #include "ServerDisplayer.h"
 #include "Log.h"
@@ -28,9 +33,13 @@ CServerDisplayer::~CServerDisplayer()
 void CServerDisplayer::Init(HWND hWnd)
 {
     PROTECT_START
-        this->m_hwnd = hWnd;
+
+        auto& log = gLog;
+    char* message = "Log";
+
+    this->m_hwnd = hWnd;
     PROTECT_FINAL
-        gLog.AddLog(1, "Log");
+        log.AddLog(1, message);
 }
 
 void CServerDisplayer::Run()
@@ -156,7 +165,7 @@ void CServerDisplayer::LogTextPaint()
 void CServerDisplayer::PaintStatusBar()
 {
     char buff[256];
-    sprintf_s(buff, "ConnectServer | XML %s", VERSION);
+    sprintf(buff, "ConnectServer | XML %s", VERSION);
 
     SetWindowText(m_hwnd, buff);
 
@@ -166,28 +175,25 @@ void CServerDisplayer::PaintStatusBar()
     SetWindowLong(hWndStatusBar, GWL_STYLE, dwStyle);
 
     char szTempText[256];
-
-    sprintf_s(szTempText, "QueueSize: %d", gSocketManager.GetQueueSize());
+    std::sprintf(szTempText, "QueueSize: %d", gSocketManager.GetQueueSize());
     SendMessage(hWndStatusBar, SB_SETTEXT, 0, (LPARAM)szTempText);
 
-    sprintf_s(szTempText, "Connected: %d", GetUserCount());
+    std::sprintf(szTempText, "Connected: %d", GetUserCount());
     SendMessage(hWndStatusBar, SB_SETTEXT, 1, (LPARAM)szTempText);
 
-    sprintf_s(szTempText, "GameServers: %d/%d", gServerList.m_GameServersList, gServerList.m_GameServersCount);
+    std::sprintf(szTempText, "GameServers: %d/%d", gServerList.m_GameServersList, gServerList.m_GameServersCount);
     SendMessage(hWndStatusBar, SB_SETTEXT, 2, (LPARAM)szTempText);
 
-    sprintf_s(szTempText, "JoinServer: %s", (gServerList.CheckJoinServerState() == 1) ? "ON" : "OFF");
+    std::sprintf(szTempText, "JoinServer: %s", (gServerList.CheckJoinServerState() == 1) ? "ON" : "OFF");
     SendMessage(hWndStatusBar, SB_SETTEXT, 3, (LPARAM)szTempText);
 
-    sprintf_s(szTempText, "Versão: %s", VERSION);
+    std::sprintf(szTempText, "Versão: %s", VERSION);
     SendMessage(hWndStatusBar, SB_SETTEXT, 4, (LPARAM)szTempText);
 
-    sprintf_s(szTempText, "Modo: %s", (gServerList.CheckJoinServerState() == 0) ? "Standby" : "Active");
-    SendMessage(hWndStatusBar, SB_SETTEXT,
+    std::sprintf(szTempText, "Modo: %s", (gServerList.CheckJoinServerState() == 0) ? "Standby" : "Active");
+    SendMessage(hWndStatusBar, SB_SETTEXT, 5, (LPARAM)szTempText);
 
-        5, (LPARAM)szTempText);
-
-    sprintf_s(szTempText, "Licença: Premium");
+    std::sprintf(szTempText, "Licença: Premium");
     SendMessage(hWndStatusBar, SB_SETTEXT, 6, (LPARAM)szTempText);
 
     SendMessage(hWndStatusBar, SB_SETTEXT, 7, 0);
@@ -197,18 +203,12 @@ void CServerDisplayer::PaintStatusBar()
 
 void CServerDisplayer::LogAddText(eLogColor color, const char* text, int size)
 {
-    PROTECT_START
-        size = min(size, MAX_LOG_TEXT_SIZE - 1);
+    size = min(size, MAX_LOG_TEXT_SIZE - 1);
 
     memset(this->m_log[this->m_count].text, 0, sizeof(this->m_log[this->m_count].text));
-
-    memcpy(this->m_log[this->m_count].text, text, size);
-
+    std::memcpy(this->m_log[this->m_count].text, text, size);
     this->m_log[this->m_count].color = color;
+    this->m_count = (this->m_count + 1) % MAX_LOG_TEXT_LINE;
 
-    this->m_count = (++this->m_count >= MAX_LOG_TEXT_LINE) ? 0 : this->m_count;
-
-    PROTECT_FINAL
-
-        gLog.Output(LOG_GENERAL, "%s", &text[9]);
+    gLog.Output(LOG_GENERAL, "%s", &text[9]);
 }

@@ -25,55 +25,55 @@ CMemoryAllocatorInfo::CMemoryAllocatorInfo() // OK
 	this->Clear();
 }
 
-void CMemoryAllocatorInfo::Clear() // OK
+void CMemoryAllocatorInfo::Clear()
 {
-	this->m_Index = -1;
-	this->m_Active = 0;
-	this->m_ActiveTime = 0;
-	this->m_SkillBackup = 0;
-	this->m_Skill = 0;
-	this->m_VpPlayer = 0;
-	this->m_VpPlayer2 = 0;
-	this->m_VpPlayerItem = 0;
-	this->m_HitDamage = 0;
-	this->m_Effect = 0;
-#if(NEW_PROTOCOL_SYSTEM==0)
-	this->m_PerSocketContext = 0;
+	m_Index = -1;
+	m_Active = 0;
+	m_ActiveTime = 0;
+	m_SkillBackup = 0;
+	m_Skill = 0;
+	m_VpPlayer = 0;
+	m_VpPlayer2 = 0;
+	m_VpPlayerItem = 0;
+	m_HitDamage = 0;
+	m_Effect = 0;
+#if (NEW_PROTOCOL_SYSTEM == 0)
+	m_PerSocketContext = 0;
 #endif
-	this->m_Inventory1 = 0;
-	this->m_Inventory2 = 0;
-	this->m_InventoryMap1 = 0;
-	this->m_InventoryMap2 = 0;
-	this->m_Trade = 0;
-	this->m_TradeMap = 0;
-	this->m_Warehouse = 0;
-	this->m_WarehouseMap = 0;
-	this->m_ChaosBox = 0;
-	this->m_ChaosBoxMap = 0;
-	#if(GAMESERVER_UPDATE>=802)
-	this->m_EventInventory1 = 0;
-	this->m_EventInventory2 = 0;
-	this->m_EventInventoryMap1 = 0;
-	this->m_EventInventoryMap2 = 0;
-	#endif
-	#if(GAMESERVER_UPDATE>=803)
-	this->m_MuunInventory = 0;
-	this->m_MuunInventoryMap = 0;
-	#endif
-	this->m_MasterSkill = 0;
-	this->m_QuestKillCount = 0;
-	this->m_QuestWorldList = 0;
-	this->m_GensVictimList = 0;
-	this->m_SkillDelay = 0;
-	this->m_HackPacketDelay = 0;
-	this->m_HackPacketCount = 0;
-	#if(GAMESERVER_UPDATE>=701)
-	this->m_PentagramJewelInfo_Inventory = 0;
-	this->m_PentagramJewelInfo_Warehouse = 0;
-	#endif
-	#if(GAMESERVER_UPDATE>=802)
-	this->m_MuRummyInfo = 0;
-	#endif
+	m_Inventory1 = 0;
+	m_Inventory2 = 0;
+	m_InventoryMap1 = 0;
+	m_InventoryMap2 = 0;
+	m_Trade = 0;
+	m_TradeMap = 0;
+	m_Warehouse = 0;
+	m_WarehouseMap = 0;
+	m_ChaosBox = 0;
+	m_ChaosBoxMap = 0;
+#if (GAMESERVER_UPDATE >= 802)
+	m_EventInventory1 = 0;
+	m_EventInventory2 = 0;
+	m_EventInventoryMap1 = 0;
+	m_EventInventoryMap2 = 0;
+#endif
+#if (GAMESERVER_UPDATE >= 803)
+	m_MuunInventory = 0;
+	m_MuunInventoryMap = 0;
+#endif
+	m_MasterSkill = 0;
+	m_QuestKillCount = 0;
+	m_QuestWorldList = 0;
+	m_GensVictimList = 0;
+	m_SkillDelay = 0;
+	m_HackPacketDelay = 0;
+	m_HackPacketCount = 0;
+#if (GAMESERVER_UPDATE >= 701)
+	m_PentagramJewelInfo_Inventory = 0;
+	m_PentagramJewelInfo_Warehouse = 0;
+#endif
+#if (GAMESERVER_UPDATE >= 802)
+	m_MuRummyInfo = 0;
+#endif
 }
 
 void CMemoryAllocatorInfo::Alloc() // OK

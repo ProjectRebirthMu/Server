@@ -23,9 +23,9 @@ public:
 	virtual ~CServerManager();
 	bool CheckState();
 	bool CheckAlloc();
-	void AddServer(int index,char* ip,SOCKET socket);
+	void AddServer(int index,const char* ip,SOCKET socket);
 	void DelServer();
-	void SetServerInfo(char* name,WORD port,WORD code);
+	void SetServerInfo(const char* name,WORD port,WORD code);
 public:
 	int m_index;
 	eServerState m_state;

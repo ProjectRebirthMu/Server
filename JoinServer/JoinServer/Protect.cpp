@@ -13,27 +13,27 @@ CProtect gProtect;
 
 CProtect::CProtect() // OK
 {
-	#if(PROTECT_STATE==1)
+#if (PROTECT_STATE == 1)
 
 	CLEAR_START
 
 	VM_START
 
-	srand((DWORD)time(0));
+	std::srand(static_cast<unsigned int>(std::time(0)));
 
 	this->m_socket = INVALID_SOCKET;
 
-	memset(this->m_ComputerHardwareId,0,sizeof(this->m_ComputerHardwareId));
+	std::memset(this->m_ComputerHardwareId, 0, sizeof(this->m_ComputerHardwareId));
 
-	this->m_EncKey = rand()%256;
+	this->m_EncKey = std::rand() % 256;
 
-	memset(&this->m_AuthInfo,0,sizeof(this->m_AuthInfo));
+	std::memset(&this->m_AuthInfo, 0, sizeof(this->m_AuthInfo));
 
 	VM_END
 
 	CLEAR_END
 
-	#endif
+#endif
 }
 
 CProtect::~CProtect() // OK

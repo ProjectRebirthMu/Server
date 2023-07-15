@@ -1,4 +1,7 @@
-// Rev - 2023
+// ConnectServer.cpp: implementation of the WinMain class.
+// Revisado: 14/07/23 16:50 GMT-3
+// By: Qubit
+//////////////////////////////////////////////////////////////////////
 
 #include "stdafx.h"
 #include "resource.h"
@@ -21,11 +24,11 @@ char CustomerHardwareId[36];
 long MaxIpConnection;
 char Version[9];
 
-int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
+int APIENTRY wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLine, int nCmdShow)
 {
 	VM_START
 
-		CMiniDump::Start();
+	CMiniDump::Start();
 
 	LoadString(hInstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING);
 	LoadString(hInstance, IDC_CONNECTSERVER, szWindowClass, MAX_LOADSTRING);
@@ -37,9 +40,9 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 		return 0;
 	}
 
-	char buff[256];
+	TCHAR buff[256];
 
-	sprintf_s(buff, sizeof(buff), "Loading files...");
+	_stprintf_s(buff, sizeof(buff), _T("Loading files..."));
 
 	SetWindowText(hWnd, buff);
 
@@ -49,17 +52,17 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 
 	if (WSAStartup(MAKEWORD(2, 2), &wsa) == 0)
 	{
-		WORD ConnectServerPortTCP = GetPrivateProfileInt("ConnectServerInfo", "ConnectServerPortTCP", 44405, ".\\ConnectServer.ini");
+		WORD ConnectServerPortTCP = GetPrivateProfileInt(_T("ConnectServerInfo"), _T("ConnectServerPortTCP"), 44405, _T(".\\ConnectServer.ini"));
 
-		WORD ConnectServerPortUDP = GetPrivateProfileInt("ConnectServerInfo", "ConnectServerPortUDP", 55557, ".\\ConnectServer.ini");
+		WORD ConnectServerPortUDP = GetPrivateProfileInt(_T("ConnectServerInfo"), _T("ConnectServerPortUDP"), 55557, _T(".\\ConnectServer.ini"));
 
-		GetPrivateProfileString("ConnectServerInfo", "Version", "", Version, sizeof(Version), ".\\ConnectServer.ini");
+		GetPrivateProfileString(_T("ConnectServerInfo"), _T("Version"), _T(""), Version, sizeof(Version), _T(".\\ConnectServer.ini"));
 
-		MaxIpConnection = GetPrivateProfileInt("ConnectServerInfo", "MaxIpConnection", 0, ".\\ConnectServer.ini");
+		MaxIpConnection = GetPrivateProfileInt(_T("ConnectServerInfo"), _T("MaxIpConnection"), 0, _T(".\\ConnectServer.ini"));
 
 		if (gSocketManager.Start(ConnectServerPortTCP) != 0 && gSocketManagerUdp.Start(ConnectServerPortUDP) != 0)
 		{
-			gServerList.Load("ServerList.xml");
+			gServerList.Load(_T("ServerList.xml"));
 
 			SetTimer(hWnd, TIMER_1000, 1000, 0);
 
@@ -67,7 +70,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 
 			SetTimer(hWnd, TIMER_2000, 2000, 0);
 
-			HACCEL hAccelTable = LoadAccelerators(hInstance, (LPCTSTR)IDC_CONNECTSERVER);
+			HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_CONNECTSERVER));
 
 			MSG msg;
 
@@ -76,7 +79,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 				if (TranslateAccelerator(msg.hwnd, hAccelTable, &msg) == 0)
 				{
 					TranslateMessage(&msg);
-					DispatchMessageA(&msg);
+					DispatchMessage(&msg);
 				}
 			}
 
@@ -84,34 +87,19 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 
 			VM_END
 
-				return msg.wParam;
+				return (int)msg.wParam;
 		}
 	}
 	else
 	{
-		LogAdd(LOG_RED, "WSAStartup() failed with error: %d", WSAGetLastError());
-	}
-
-	SetTimer(hWnd, TIMER_2000, 2000, 0);
-
-	HACCEL hAccelTable = LoadAccelerators(hInstance, (LPCTSTR)IDC_CONNECTSERVER);
-
-	MSG msg;
-
-	while (GetMessage(&msg, 0, 0, 0) != 0)
-	{
-		if (TranslateAccelerator(msg.hwnd, hAccelTable, &msg) == 0)
-		{
-			TranslateMessage(&msg);
-			DispatchMessageA(&msg);
-		}
+		LogAdd(LOG_RED, _T("WSAStartup() failed with error: %d"), WSAGetLastError());
 	}
 
 	CMiniDump::Clean();
 
 	VM_END
 
-	return msg.wParam;
+	return 0;
 }
 
 ATOM MyRegisterClass(HINSTANCE hInstance)
@@ -153,7 +141,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 	return TRUE;
 }
 
-LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) // OK
+LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	switch (message)
 	{
@@ -161,13 +149,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) 
 		switch (LOWORD(wParam))
 		{
 		case IDM_ABOUT:
-			DialogBox(hInst, (LPCTSTR)IDD_ABOUTBOX, hWnd, (DLGPROC)About);
+			DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, DLGPROC(About));
 			break;
 		case IDM_EXIT:
-			if (MessageBox(0, "Are you sure to terminate ConnectServer?", "Ask terminate server", MB_YESNO | MB_ICONQUESTION) == IDYES)
-			{
-				DestroyWindow(hWnd);
-			}
+			DestroyWindow(hWnd);
 			break;
 		default:
 			return DefWindowProc(hWnd, message, wParam, lParam);

@@ -18,22 +18,17 @@ CSocketManager gSocketManager;
 CSocketManager::CSocketManager() // OK
 {
 	this->m_listen = INVALID_SOCKET;
-
 	this->m_CompletionPort = 0;
-
 	this->m_port = 0;
-
 	this->m_ServerAcceptThread = 0;
 
-	for(int n=0;n < MAX_SERVER_WORKER_THREAD;n++)
+	for (int n = 0; n < MAX_SERVER_WORKER_THREAD; n++)
 	{
 		this->m_ServerWorkerThread[n] = 0;
 	}
 
 	this->m_ServerWorkerThreadCount = 0;
-
 	this->m_ServerQueueSemaphore = 0;
-
 	this->m_ServerQueueThread = 0;
 }
 
@@ -46,283 +41,264 @@ bool CSocketManager::Start(WORD port) // OK
 {
 	PROTECT_START
 
-	this->m_port = port;
+		this->m_port = port;
 
-	if(this->CreateListenSocket() == 0)
+	if (CreateListenSocket() == 0 || CreateCompletionPort() == 0 || CreateAcceptThread() == 0 || CreateWorkerThread() == 0 || CreateServerQueue() == 0)
 	{
-		this->Clean();
-		return 0;
-	}
-
-	if(this->CreateCompletionPort() == 0)
-	{
-		this->Clean();
-		return 0;
-	}
-
-	if(this->CreateAcceptThread() == 0)
-	{
-		this->Clean();
-		return 0;
-	}
-
-	if(this->CreateWorkerThread() == 0)
-	{
-		this->Clean();
-		return 0;
-	}
-
-	if(this->CreateServerQueue() == 0)
-	{
-		this->Clean();
-		return 0;
+		Clean();
+		return false;
 	}
 
 	PROTECT_FINAL
 
-	LogAdd(LOG_BLUE,"[SocketManager] Server started at port [%d]",this->m_port);
-	return 1;
+		LogAdd(LOG_BLUE, "[SocketManager] Server started at port [%d]", this->m_port);
+	return true;
 }
 
 void CSocketManager::Clean() // OK
 {
-	if(this->m_ServerQueueThread != 0)
+	if (m_ServerQueueThread != nullptr)
 	{
-		TerminateThread(this->m_ServerQueueThread,0);
-		CloseHandle(this->m_ServerQueueThread);
-		this->m_ServerQueueThread = 0;
+		TerminateThread(m_ServerQueueThread, 0);
+		CloseHandle(m_ServerQueueThread);
+		m_ServerQueueThread = nullptr;
 	}
 
-	if(this->m_ServerQueueSemaphore != 0)
+	if (m_ServerQueueSemaphore != nullptr)
 	{
-		CloseHandle(this->m_ServerQueueSemaphore);
-		this->m_ServerQueueSemaphore = 0;
+		CloseHandle(m_ServerQueueSemaphore);
+		m_ServerQueueSemaphore = nullptr;
 	}
 
-	this->m_ServerQueue.ClearQueue();
+	m_ServerQueue.ClearQueue();
 
-	for(DWORD n=0;n < MAX_SERVER_WORKER_THREAD;n++)
+	for (DWORD n = 0; n < MAX_SERVER_WORKER_THREAD; n++)
 	{
-		if(this->m_ServerWorkerThread[n] != 0)
+		if (m_ServerWorkerThread[n] != nullptr)
 		{
-			TerminateThread(this->m_ServerWorkerThread[n],0);
-			CloseHandle(this->m_ServerWorkerThread[n]);
-			this->m_ServerWorkerThread[n] = 0;
+			TerminateThread(m_ServerWorkerThread[n], 0);
+			CloseHandle(m_ServerWorkerThread[n]);
+			m_ServerWorkerThread[n] = nullptr;
 		}
 	}
 
-	if(this->m_ServerAcceptThread != 0)
+	if (m_ServerAcceptThread != nullptr)
 	{
-		TerminateThread(this->m_ServerAcceptThread,0);
-		CloseHandle(this->m_ServerAcceptThread);
-		this->m_ServerAcceptThread = 0;
+		TerminateThread(m_ServerAcceptThread, 0);
+		CloseHandle(m_ServerAcceptThread);
+		m_ServerAcceptThread = nullptr;
 	}
 
-	if(this->m_CompletionPort != 0)
+	if (m_CompletionPort != nullptr)
 	{
-		CloseHandle(this->m_CompletionPort);
-		this->m_CompletionPort = 0;
+		CloseHandle(m_CompletionPort);
+		m_CompletionPort = nullptr;
 	}
 
-	if(this->m_listen != INVALID_SOCKET)
+	if (m_listen != INVALID_SOCKET)
 	{
-		closesocket(this->m_listen);
-		this->m_listen = INVALID_SOCKET;
+		closesocket(m_listen);
+		m_listen = INVALID_SOCKET;
 	}
 }
 
 bool CSocketManager::CreateListenSocket() // OK
 {
-	if((this->m_listen=WSASocket(AF_INET,SOCK_STREAM,0,0,0,WSA_FLAG_OVERLAPPED)) == INVALID_SOCKET)
+	m_listen = WSASocket(AF_INET, SOCK_STREAM, 0, nullptr, 0, WSA_FLAG_OVERLAPPED);
+
+	if (m_listen == INVALID_SOCKET)
 	{
-		LogAdd(LOG_RED,"[SocketManager] WSASocket() failed with error: %d",WSAGetLastError());
-		return 0;
+		LogAdd(LOG_RED, "[SocketManager] WSASocket() failed with error: %d", WSAGetLastError());
+		return false;
 	}
 
 	SOCKADDR_IN SocketAddr;
-
 	SocketAddr.sin_family = AF_INET;
-	SocketAddr.sin_addr.s_addr = htonl(0);
-	SocketAddr.sin_port = htons(this->m_port);
+	SocketAddr.sin_addr.s_addr = htonl(INADDR_ANY);
+	SocketAddr.sin_port = htons(m_port);
 
-	if(bind(this->m_listen,(sockaddr*)&SocketAddr,sizeof(SocketAddr)) == SOCKET_ERROR)
+	if (bind(m_listen, reinterpret_cast<sockaddr*>(&SocketAddr), sizeof(SocketAddr)) == SOCKET_ERROR)
 	{
-		LogAdd(LOG_RED,"[SocketManager] bind() failed with error: %d",WSAGetLastError());
-		return 0;
+		LogAdd(LOG_RED, "[SocketManager] bind() failed with error: %d", WSAGetLastError());
+		return false;
 	}
 
-	if(listen(this->m_listen,5) == SOCKET_ERROR)
+	if (listen(m_listen, 5) == SOCKET_ERROR)
 	{
-		LogAdd(LOG_RED,"[SocketManager] listen() failed with error: %d",WSAGetLastError());
-		return 0;
+		LogAdd(LOG_RED, "[SocketManager] listen() failed with error: %d", WSAGetLastError());
+		return false;
 	}
-	
-	return 1;
+
+	return true;
 }
 
 bool CSocketManager::CreateCompletionPort() // OK
 {
-	SOCKET socket = ::socket(AF_INET,SOCK_STREAM,IPPROTO_IP);
+	SOCKET socket = ::socket(AF_INET, SOCK_STREAM, IPPROTO_IP);
 
-	if(socket == INVALID_SOCKET) 
+	if (socket == INVALID_SOCKET)
 	{
-		LogAdd(LOG_RED,"[SocketManager] socket() failed with error: %d",WSAGetLastError());
-		return 0;
+		LogAdd(LOG_RED, "[SocketManager] socket() failed with error: %d", WSAGetLastError());
+		return false;
 	}
 
-	if((this->m_CompletionPort=CreateIoCompletionPort((HANDLE)socket,0,0,0)) == 0)
+	HANDLE completionPort = CreateIoCompletionPort(reinterpret_cast<HANDLE>(socket), 0, 0, 0);
+
+	if (completionPort == nullptr)
 	{
-		LogAdd(LOG_RED,"[SocketManager] CreateIoCompletionPort() failed with error: %d",GetLastError());
+		LogAdd(LOG_RED, "[SocketManager] CreateIoCompletionPort() failed with error: %d", GetLastError());
 		closesocket(socket);
-		return 0;
+		return false;
 	}
 
 	closesocket(socket);
-	return 1;
+	m_CompletionPort = completionPort;
+	return true;
 }
 
 bool CSocketManager::CreateAcceptThread() // OK
 {
-	if((this->m_ServerAcceptThread=CreateThread(0,0,(LPTHREAD_START_ROUTINE)this->ServerAcceptThread,this,0,0)) == 0)
+	this->m_ServerAcceptThread = CreateThread(0, 0, reinterpret_cast<LPTHREAD_START_ROUTINE>(ServerAcceptThread), this, 0, 0);
+
+	if (this->m_ServerAcceptThread == nullptr)
 	{
-		LogAdd(LOG_RED,"[SocketManager] CreateThread() failed with error: %d",GetLastError());
-		return 0;
+		LogAdd(LOG_RED, "[SocketManager] CreateThread() failed with error: %d", GetLastError());
+		return false;
 	}
 
-	if(SetThreadPriority(this->m_ServerAcceptThread,THREAD_PRIORITY_HIGHEST) == 0)
+	if (SetThreadPriority(this->m_ServerAcceptThread, THREAD_PRIORITY_HIGHEST) == 0)
 	{
-		LogAdd(LOG_RED,"[SocketManager] SetThreadPriority() failed with error: %d",GetLastError());
-		return 0;
+		LogAdd(LOG_RED, "[SocketManager] SetThreadPriority() failed with error: %d", GetLastError());
+		return false;
 	}
 
-	return 1;
+	return true;
 }
 
 bool CSocketManager::CreateWorkerThread() // OK
 {
 	SYSTEM_INFO SystemInfo;
-
 	GetSystemInfo(&SystemInfo);
 
-	this->m_ServerWorkerThreadCount = ((SystemInfo.dwNumberOfProcessors>MAX_SERVER_WORKER_THREAD)?MAX_SERVER_WORKER_THREAD:SystemInfo.dwNumberOfProcessors);
+	this->m_ServerWorkerThreadCount = min(SystemInfo.dwNumberOfProcessors, MAX_SERVER_WORKER_THREAD);
 
-	for(DWORD n=0;n < this->m_ServerWorkerThreadCount;n++)
+	for (DWORD n = 0; n < this->m_ServerWorkerThreadCount; n++)
 	{
-		if((this->m_ServerWorkerThread[n]=CreateThread(0,0,(LPTHREAD_START_ROUTINE)this->ServerWorkerThread,this,0,0)) == 0)
+		this->m_ServerWorkerThread[n] = CreateThread(0, 0, reinterpret_cast<LPTHREAD_START_ROUTINE>(ServerWorkerThread), this, 0, 0);
+
+		if (this->m_ServerWorkerThread[n] == nullptr)
 		{
-			LogAdd(LOG_RED,"[SocketManager] CreateThread() failed with error: %d",GetLastError());
-			return 0;
+			LogAdd(LOG_RED, "[SocketManager] CreateThread() failed with error: %d", GetLastError());
+			return false;
 		}
 
-		if(SetThreadPriority(this->m_ServerWorkerThread[n],THREAD_PRIORITY_HIGHEST) == 0)
+		if (SetThreadPriority(this->m_ServerWorkerThread[n], THREAD_PRIORITY_HIGHEST) == 0)
 		{
-			LogAdd(LOG_RED,"[SocketManager] SetThreadPriority() failed with error: %d",GetLastError());
-			return 0;
+			LogAdd(LOG_RED, "[SocketManager] SetThreadPriority() failed with error: %d", GetLastError());
+			return false;
 		}
 	}
 
-	return 1;
+	return true;
 }
 
 bool CSocketManager::CreateServerQueue() // OK
 {
-	if((this->m_ServerQueueSemaphore=CreateSemaphore(0,0,MAX_QUEUE_SIZE,0)) == 0)
+	this->m_ServerQueueSemaphore = CreateSemaphore(nullptr, 0, MAX_QUEUE_SIZE, nullptr);
+	if (this->m_ServerQueueSemaphore == nullptr)
 	{
-		LogAdd(LOG_RED,"[SocketManager] CreateSemaphore() failed with error: %d",GetLastError());
-		return 0;
+		LogAdd(LOG_RED, "[SocketManager] CreateSemaphore() failed with error: %d", GetLastError());
+		return false;
 	}
 
-	if((this->m_ServerQueueThread=CreateThread(0,0,(LPTHREAD_START_ROUTINE)this->ServerQueueThread,this,0,0)) == 0)
+	this->m_ServerQueueThread = CreateThread(nullptr, 0, reinterpret_cast<LPTHREAD_START_ROUTINE>(ServerQueueThread), this, 0, nullptr);
+	if (this->m_ServerQueueThread == nullptr)
 	{
-		LogAdd(LOG_RED,"[SocketManager] CreateThread() failed with error: %d",GetLastError());
-		return 0;
+		LogAdd(LOG_RED, "[SocketManager] CreateThread() failed with error: %d", GetLastError());
+		return false;
 	}
 
-	if(SetThreadPriority(this->m_ServerQueueThread,THREAD_PRIORITY_HIGHEST) == 0)
+	if (SetThreadPriority(this->m_ServerQueueThread, THREAD_PRIORITY_HIGHEST) == 0)
 	{
-		LogAdd(LOG_RED,"[SocketManager] SetThreadPriority() failed with error: %d",GetLastError());
-		return 0;
+		LogAdd(LOG_RED, "[SocketManager] SetThreadPriority() failed with error: %d", GetLastError());
+		return false;
 	}
 
-	return 1;
+	return true;
 }
 
-bool CSocketManager::DataRecv(int index,IO_MAIN_BUFFER* lpIoBuffer) // OK
+bool CSocketManager::DataRecv(int index, IO_MAIN_BUFFER* lpIoBuffer) // OK
 {
-	if(lpIoBuffer->size < 3)
+	if (lpIoBuffer->size < 3)
 	{
-		return 1;
+		return true;
 	}
 
 	BYTE* lpMsg = lpIoBuffer->buff;
+	int count = 0;
+	int size = 0;
+	BYTE header = 0;
+	BYTE head = 0;
 
-	int count=0,size=0;
-	BYTE header,head;
-
-	while(true)
+	while (true)
 	{
-		if(lpMsg[count] == 0xC1)
+		if (lpMsg[count] == 0xC1)
 		{
 			header = lpMsg[count];
-			size = lpMsg[count+1];
-			head = lpMsg[count+2];
+			size = lpMsg[count + 1];
+			head = lpMsg[count + 2];
 		}
-		else if(lpMsg[count] == 0xC2)
+		else if (lpMsg[count] == 0xC2)
 		{
 			header = lpMsg[count];
-			size = MAKEWORD(lpMsg[count+2],lpMsg[count+1]);
-			head = lpMsg[count+3];
+			size = MAKEWORD(lpMsg[count + 2], lpMsg[count + 1]);
+			head = lpMsg[count + 3];
 		}
 		else
 		{
-			LogAdd(LOG_RED,"[SocketManager] Protocol header error (Index: %d, Header: %x)",index,lpMsg[count]);
-			return 0;
+			LogAdd(LOG_RED, "[SocketManager] Protocol header error (Index: %d, Header: %x)", index, lpMsg[count]);
+			return false;
 		}
 
-		if(size < 3 || size > MAX_MAIN_PACKET_SIZE)
+		if (size < 3 || size > MAX_MAIN_PACKET_SIZE)
 		{
-			LogAdd(LOG_RED,"[SocketManager] Protocol size error (Index: %d, Header: %x, Size: %d, Head: %x)",index,header,size,head);
-			return 0;
+			LogAdd(LOG_RED, "[SocketManager] Protocol size error (Index: %d, Header: %x, Size: %d, Head: %x)", index, header, size, head);
+			return false;
 		}
 
-		if(size <= lpIoBuffer->size)
+		if (size <= lpIoBuffer->size)
 		{
-			static QUEUE_INFO QueueInfo;
-
+			QUEUE_INFO QueueInfo;
 			QueueInfo.index = index;
-
 			QueueInfo.head = head;
-
-			memcpy(QueueInfo.buff,&lpMsg[count],size);
-
+			memcpy(QueueInfo.buff, &lpMsg[count], size);
 			QueueInfo.size = size;
 
-			if(this->m_ServerQueue.AddToQueue(&QueueInfo) != 0)
+			if (this->m_ServerQueue.AddToQueue(&QueueInfo) != 0)
 			{
-				ReleaseSemaphore(this->m_ServerQueueSemaphore,1,0);
+				ReleaseSemaphore(this->m_ServerQueueSemaphore, 1, nullptr);
 			}
 
 			count += size;
-
 			lpIoBuffer->size -= size;
 
-			if(lpIoBuffer->size <= 0)
+			if (lpIoBuffer->size <= 0)
 			{
 				break;
 			}
 		}
 		else
 		{
-			if(count > 0 && lpIoBuffer->size > 0 && lpIoBuffer->size <= (MAX_MAIN_PACKET_SIZE-count))
+			if (count > 0 && lpIoBuffer->size > 0 && lpIoBuffer->size <= (MAX_MAIN_PACKET_SIZE - count))
 			{
-				memmove(lpMsg,&lpMsg[count],lpIoBuffer->size);
+				memmove(lpMsg, &lpMsg[count], lpIoBuffer->size);
 			}
 
 			break;
 		}
 	}
 
-	return 1;
+	return true;
 }
 
 bool CSocketManager::DataSend(int index,BYTE* lpMsg,int size) // OK

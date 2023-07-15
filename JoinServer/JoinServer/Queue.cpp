@@ -11,12 +11,11 @@
 
 CQueue::CQueue() // OK
 {
-
 }
 
-CQueue::~CQueue() // OK
+CQueue::~CQueue()
 {
-	this->ClearQueue();
+	ClearQueue();
 }
 
 void CQueue::ClearQueue() // OK
