@@ -1,11 +1,10 @@
 #pragma once
 
 #define WIN32_LEAN_AND_MEAN
-#define _WINSOCK_DEPRECATED_NO_WARNINGS
 
 #define _WIN32_WINNT _WIN32_WINNT_WINXP
 
-constexpr const char* VERSION = "1.0.0.2";
+constexpr const char* VERSION = "1.0.0.3";
 
 constexpr const char* CONNECTSERVER_VERSION = "CS";
 constexpr const char* CONNECTSERVER_CLIENT = "[Main.exe] OpenSource";
@@ -33,7 +32,7 @@ constexpr const char* CONNECTSERVER_CLIENT = "[Main.exe] OpenSource";
 #include <Psapi.h>
 #include <CommCtrl.h>
 #include <iostream>
-#include "../Dependences/curl-master/include/curl/curl.h"
+#include <curl/curl.h>
 
 #pragma comment(lib,"ws2_32.lib")
 #pragma comment(lib,"Rpcrt4.lib")
@@ -46,3 +45,5 @@ extern long MaxIpConnection;
 extern char Version[9];
 
 typedef unsigned __int64 QWORD;
+
+#define _WINSOCK_DEPRECATED_NO_WARNINGS

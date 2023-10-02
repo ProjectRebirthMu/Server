@@ -1,5 +1,5 @@
 // ServerDisplayer.cpp: implementation of the CServerDisplayer class.
-// Revisado: 14/07/23 16:29 GMT-3
+// Revisado: 02/10/23 19:52 GMT-3
 // By: Qubit
 //////////////////////////////////////////////////////////////////////
 
@@ -20,10 +20,10 @@ CServerDisplayer gServerDisplayer;
 
 CServerDisplayer::CServerDisplayer()
 {
-    for (int n = 0; n < MAX_LOG_TEXT_LINE; n++)
-    {
-        memset(&this->m_log[n], 0, sizeof(this->m_log[n]));
-    }
+	for (int n = 0; n < MAX_LOG_TEXT_LINE; n++)
+	{
+		memset(&this->m_log[n], 0, sizeof(this->m_log[n]));
+	}
 }
 
 CServerDisplayer::~CServerDisplayer()
@@ -32,20 +32,20 @@ CServerDisplayer::~CServerDisplayer()
 
 void CServerDisplayer::Init(HWND hWnd)
 {
-    PROTECT_START
+	// Inicializa o ponteiro do log
+	auto& log = gLog;
 
-        auto& log = gLog;
-    char* message = "Log";
+	// Inicializa a janela
+	this->m_hwnd = hWnd;
 
-    this->m_hwnd = hWnd;
-    PROTECT_FINAL
-        log.AddLog(1, message);
+	// Adiciona o log
+	log.AddLog(1, "Log");
 }
 
-void CServerDisplayer::Run()
+void CServerDisplayer::Run() // OK
 {
-    this->LogTextPaint();
-    this->PaintStatusBar();
+	this->LogTextPaint();
+	this->PaintStatusBar();
 }
 
 void CServerDisplayer::LogTextPaint()
@@ -164,16 +164,22 @@ void CServerDisplayer::LogTextPaint()
 
 void CServerDisplayer::PaintStatusBar()
 {
+    // Obtém o texto da barra de status
     char buff[256];
     sprintf(buff, "ConnectServer | XML %s", VERSION);
 
+    // Define o texto da janela principal
     SetWindowText(m_hwnd, buff);
 
+    // Obtém o handle da barra de status
     HWND hWndStatusBar = GetDlgItem(m_hwnd, IDC_STATUSBAR);
+
+    // Define o estilo da barra de status
     DWORD dwStyle = GetWindowLong(hWndStatusBar, GWL_STYLE);
     dwStyle |= SBARS_SIZEGRIP | CCS_BOTTOM | WS_BORDER | WS_CLIPSIBLINGS;
     SetWindowLong(hWndStatusBar, GWL_STYLE, dwStyle);
 
+    // Define o texto da barra de status
     char szTempText[256];
     std::sprintf(szTempText, "QueueSize: %d", gSocketManager.GetQueueSize());
     SendMessage(hWndStatusBar, SB_SETTEXT, 0, (LPARAM)szTempText);
@@ -193,11 +199,10 @@ void CServerDisplayer::PaintStatusBar()
     std::sprintf(szTempText, "Modo: %s", (gServerList.CheckJoinServerState() == 0) ? "Standby" : "Active");
     SendMessage(hWndStatusBar, SB_SETTEXT, 5, (LPARAM)szTempText);
 
-    std::sprintf(szTempText, "Licença: Premium");
-    SendMessage(hWndStatusBar, SB_SETTEXT, 6, (LPARAM)szTempText);
-
+    SendMessage(hWndStatusBar, SB_SETTEXT, 6, (LPARAM)"Licença: Premium");
     SendMessage(hWndStatusBar, SB_SETTEXT, 7, 0);
 
+    // Exibe a barra de status
     ShowWindow(hWndStatusBar, SW_SHOW);
 }
 

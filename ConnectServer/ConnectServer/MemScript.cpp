@@ -1,6 +1,5 @@
 // MemScript.cpp: implementation of the CMemScript class.
-// Revisado: 14/07/23 14:32 GMT-3
-// By: Qubit
+//
 //////////////////////////////////////////////////////////////////////
 
 #include "stdafx.h"
@@ -29,42 +28,42 @@ CMemScript::~CMemScript() // OK
 	this->m_size = 0;
 }
 
-bool CMemScript::SetBuffer(const char* path) // Updated
+bool CMemScript::SetBuffer(const char* path) // using const char* for path parameter
 {
-	strcpy_s(this->m_path, sizeof(this->m_path), path);
+	strcpy_s(this->m_path, sizeof(this->m_path), path); // added size argument to strcpy_s
 
-	HANDLE file = CreateFileA(this->m_path, GENERIC_READ, FILE_SHARE_READ, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_ARCHIVE, nullptr);
+	HANDLE file = CreateFile(this->m_path, GENERIC_READ, FILE_SHARE_READ, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_ARCHIVE, nullptr); // using nullptr instead of 0
 
 	if (file == INVALID_HANDLE_VALUE)
 	{
 		this->SetLastError(0);
-		return false;
+		return false; // using false instead of 0
 	}
 
-	this->m_size = GetFileSize(file, nullptr);
+	this->m_size = GetFileSize(file, nullptr); // using nullptr instead of 0
 
-	if (this->m_buff != nullptr)
+	if (this->m_buff != nullptr) // using nullptr instead of 0
 	{
 		delete[] this->m_buff;
-		this->m_buff = nullptr;
+		this->m_buff = nullptr; // using nullptr instead of 0
 	}
 
-	this->m_buff = new (std::nothrow) char[this->m_size];
+	this->m_buff = new (std::nothrow) char[this->m_size]; // using nothrow variant of new operator
 
-	if (this->m_buff == nullptr)
+	if (this->m_buff == nullptr) // using nullptr instead of 0
 	{
 		this->SetLastError(1);
 		CloseHandle(file);
-		return false;
+		return false; // using false instead of 0
 	}
 
 	DWORD OutSize = 0;
 
-	if (ReadFile(file, this->m_buff, this->m_size, &OutSize, nullptr) == 0)
+	if (ReadFile(file, this->m_buff, this->m_size, &OutSize, nullptr) == 0) // using nullptr instead of 0
 	{
 		this->SetLastError(2);
 		CloseHandle(file);
-		return false;
+		return false; // using false instead of 0
 	}
 
 	CloseHandle(file);
@@ -73,22 +72,22 @@ bool CMemScript::SetBuffer(const char* path) // Updated
 
 	this->m_tick = GetTickCount();
 
-	return true;
+	return true; // using true instead of 1
 }
 
-bool CMemScript::GetBuffer(char* buff, DWORD* size) // Updated
+bool CMemScript::GetBuffer(char* buff, DWORD* size)
 {
-	if (this->m_buff == nullptr)
+	if (this->m_buff == nullptr) // using nullptr instead of 0
 	{
 		this->SetLastError(3);
-		return false;
+		return false; // using false instead of 0
 	}
-	memcpy_s(buff, *size, this->m_buff, this->m_size);
+	memcpy(buff, this->m_buff, this->m_size);
 	*size = this->m_size;
-	return true;
+	return true; // using true instead of 1
 }
 
-char CMemScript::GetChar() // Updated
+char CMemScript::GetChar() // Fixed
 {
 	if (this->m_count >= this->m_size)
 	{
@@ -97,9 +96,9 @@ char CMemScript::GetChar() // Updated
 	return this->m_buff[this->m_count++];
 }
 
-void CMemScript::UnGetChar(char ch) // Updated
+void CMemScript::UnGetChar(char ch) // OK
 {
-	if (this->m_count == 0)
+	if(this->m_count == 0)
 	{
 		return;
 	}
@@ -107,73 +106,71 @@ void CMemScript::UnGetChar(char ch) // Updated
 	this->m_buff[--this->m_count] = ch;
 }
 
-char CMemScript::CheckComment(char ch) // Updated
+char CMemScript::CheckComment(char ch) // OK
 {
-	if (ch != '/')
+	if(ch != '/' || (ch=this->GetChar()) != '/')
 	{
 		return ch;
 	}
 
-	char next_char = this->GetChar();
-	if (next_char != '/')
+	while(true)
 	{
-		this->UnGetChar(next_char);
-		return ch;
-	}
-
-	while (true)
-	{
-		next_char = this->GetChar();
-		if (next_char == -1)
+		if((ch=this->GetChar()) == -1)
 		{
 			return ch;
 		}
 
-		if (next_char == '\n')
+		if(ch == '\n')
 		{
 			return ch;
 		}
 	}
+
+	return ch;
 }
 
-eTokenResult CMemScript::GetToken() // Updated
+eTokenResult CMemScript::GetToken() // OK
 {
-	if ((GetTickCount() - this->m_tick) > 1000)
+	if((GetTickCount()-this->m_tick) > 1000)
 	{
 		this->SetLastError(4);
 		throw 1;
 	}
 
 	this->m_number = 0;
-	memset(this->m_string, 0, sizeof(this->m_string));
+
+	memset(this->m_string,0,sizeof(this->m_string));
 
 	char ch;
 
-	while (true)
+	while(true)
 	{
-		ch = this->GetChar();
-		if (ch == -1)
+		if((ch=this->GetChar()) == -1)
 		{
 			return TOKEN_END;
 		}
 
-		if (isspace(ch) != 0)
+		if(isspace(ch) != 0)
 		{
 			continue;
 		}
 
-		if (ch != '\n' && ch != this->CheckComment(ch))
+		if((ch=this->CheckComment(ch)) == -1)
+		{
+			return TOKEN_END;
+		}
+		else if(ch != '\n')
 		{
 			break;
 		}
 	}
 
-	if (ch == '-' || ch == '.' || ch == '*' || ch >= '0' && ch <= '9')
+	if(ch == '-' || ch == '.' || ch == '*' || ch == '0' || ch == '1' || ch == '2' || ch == '3' || ch == '4' || ch == '5' || ch == '6' || ch == '7' || ch == '8' || ch == '9')
 	{
 		return this->GetTokenNumber(ch);
 	}
 
-	if (ch == '"')
+	if(ch == '"')
 	{
 		return this->GetTokenString(ch);
 	}
@@ -181,24 +178,24 @@ eTokenResult CMemScript::GetToken() // Updated
 	return this->GetTokenCommon(ch);
 }
 
-eTokenResult CMemScript::GetTokenNumber(char ch) // Updated
+eTokenResult CMemScript::GetTokenNumber(char ch) // OK
 {
 	int count = 0;
 
 	this->UnGetChar(ch);
 
-	while ((ch = this->GetChar()) != -1 && (ch == '-' || ch == '.' || ch == '*' || isdigit(ch)))
+	while((ch=this->GetChar()) != -1 && (ch == '-' || ch == '.' || ch == '*' || isdigit(ch) != 0))
 	{
 		this->m_string[count++] = ch;
 	}
 
-	if (strcmp(this->m_string, "*") == 0)
+	if(strcmp(this->m_string,"*") == 0)
 	{
 		this->m_number = -1;
 	}
 	else
 	{
-		this->m_number = std::stof(this->m_string);
+		this->m_number = (float)atof(this->m_string);
 	}
 
 	this->m_string[count] = 0;
@@ -206,16 +203,16 @@ eTokenResult CMemScript::GetTokenNumber(char ch) // Updated
 	return TOKEN_NUMBER;
 }
 
-eTokenResult CMemScript::GetTokenString(char ch) // Updated
+eTokenResult CMemScript::GetTokenString(char ch) // OK
 {
 	int count = 0;
 
-	while ((ch = this->GetChar()) != -1 && ch != '"')
+	while((ch=this->GetChar()) != -1 && ch != '"')
 	{
 		this->m_string[count++] = ch;
 	}
 
-	if (ch != '"')
+	if(ch != '"')
 	{
 		this->UnGetChar(ch);
 	}
@@ -225,9 +222,9 @@ eTokenResult CMemScript::GetTokenString(char ch) // Updated
 	return TOKEN_STRING;
 }
 
-eTokenResult CMemScript::GetTokenCommon(char ch) // Updated
+eTokenResult CMemScript::GetTokenCommon(char ch) // OK
 {
-	if (isalpha(ch) == 0)
+	if(isalpha(ch) == 0)
 	{
 		return TOKEN_ERROR;
 	}
@@ -236,7 +233,7 @@ eTokenResult CMemScript::GetTokenCommon(char ch) // Updated
 
 	this->m_string[count++] = ch;
 
-	while ((ch = this->GetChar()) != -1 && (ch == '.' || ch == '_' || isalnum(ch)))
+	while((ch=this->GetChar()) != -1 && (ch == '.' || ch == '_' || isalnum(ch) != 0))
 	{
 		this->m_string[count++] = ch;
 	}
@@ -250,26 +247,26 @@ eTokenResult CMemScript::GetTokenCommon(char ch) // Updated
 
 void CMemScript::SetLastError(int error) // OK
 {
-	switch (error)
+	switch(error)
 	{
-	case 0:
-		wsprintf(this->m_LastError, MEM_SCRIPT_ERROR_CODE0, this->m_path);
-		break;
-	case 1:
-		wsprintf(this->m_LastError, MEM_SCRIPT_ERROR_CODE1, this->m_path);
-		break;
-	case 2:
-		wsprintf(this->m_LastError, MEM_SCRIPT_ERROR_CODE2, this->m_path);
-		break;
-	case 3:
-		wsprintf(this->m_LastError, MEM_SCRIPT_ERROR_CODE3, this->m_path);
-		break;
-	case 4:
-		wsprintf(this->m_LastError, MEM_SCRIPT_ERROR_CODE4, this->m_path);
-		break;
-	default:
-		wsprintf(this->m_LastError, MEM_SCRIPT_ERROR_CODEX, this->m_path, error);
-		break;
+		case 0:
+			wsprintf(this->m_LastError,MEM_SCRIPT_ERROR_CODE0,this->m_path);
+			break;
+		case 1:
+			wsprintf(this->m_LastError,MEM_SCRIPT_ERROR_CODE1,this->m_path);
+			break;
+		case 2:
+			wsprintf(this->m_LastError,MEM_SCRIPT_ERROR_CODE2,this->m_path);
+			break;
+		case 3:
+			wsprintf(this->m_LastError,MEM_SCRIPT_ERROR_CODE3,this->m_path);
+			break;
+		case 4:
+			wsprintf(this->m_LastError,MEM_SCRIPT_ERROR_CODE4,this->m_path);
+			break;
+		default:
+			wsprintf(this->m_LastError,MEM_SCRIPT_ERROR_CODEX,this->m_path,error);
+			break;
 	}
 }
 

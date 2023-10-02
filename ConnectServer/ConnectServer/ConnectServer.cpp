@@ -1,5 +1,5 @@
 // ConnectServer.cpp: implementation of the WinMain class.
-// Revisado: 14/07/23 16:50 GMT-3
+// Revisado: 02/10/23 19:52 GMT-3
 // By: Qubit
 //////////////////////////////////////////////////////////////////////
 
@@ -28,7 +28,7 @@ int APIENTRY wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmd
 {
 	VM_START
 
-	CMiniDump::Start();
+		CMiniDump::Start();
 
 	LoadString(hInstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING);
 	LoadString(hInstance, IDC_CONNECTSERVER, szWindowClass, MAX_LOADSTRING);
@@ -99,7 +99,7 @@ int APIENTRY wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmd
 
 	VM_END
 
-	return 0;
+		return 0;
 }
 
 ATOM MyRegisterClass(HINSTANCE hInstance)
@@ -149,10 +149,17 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		switch (LOWORD(wParam))
 		{
 		case IDM_ABOUT:
-			DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, DLGPROC(About));
+			DialogBox(hInst, (LPCTSTR)IDD_ABOUTBOX, hWnd, (DLGPROC)About);
 			break;
 		case IDM_EXIT:
-			DestroyWindow(hWnd);
+			if (MessageBox(hWnd, "Are you sure to terminate ConnectServer?", "Ask terminate server", MB_YESNO | MB_ICONQUESTION) == IDYES)
+			{
+				DestroyWindow(hWnd);
+			}
+			break;
+		case IDM_RELOAD_RELOADSERVERLIST:
+			gServerList.Load("ServerList.xml");
+			LogAdd(LOG_BLUE, "[ServerList] ServerList loaded successfully");
 			break;
 		default:
 			return DefWindowProc(hWnd, message, wParam, lParam);
@@ -162,18 +169,16 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		switch (wParam)
 		{
 		case TIMER_1000:
+			gServerList.MainProc();
 			break;
 		case TIMER_2000:
 			gServerDisplayer.Run();
 			break;
+		case TIMER_5000:
+			ConnectServerTimeoutProc();
+			break;
 		default:
 			break;
-		}
-		break;
-	case WM_CLOSE:
-		if (MessageBox(0, "Close ConnectServer?", "ConnectServer", MB_OKCANCEL) == IDOK)
-		{
-			DestroyWindow(hWnd);
 		}
 		break;
 	case WM_DESTROY:
@@ -182,7 +187,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	default:
 		return DefWindowProc(hWnd, message, wParam, lParam);
 	}
-
 	return 0;
 }
 
