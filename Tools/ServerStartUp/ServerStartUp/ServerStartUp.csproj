@@ -100,9 +100,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
-    <None Include="%24this.Icon" />
     <None Include="app.config" />
-    <None Include="notifyIconMain.Icon" />
     <None Include="Properties\DataSources\FormSettings.datasource" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -169,7 +167,6 @@
     <Content Include="Ico.ico" />
     <None Include="Resources\notifyIconMain.Icon.ico" />
     <None Include="Resources\%24this.Icon.ico" />
-    <None Include="notifyIconMain.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

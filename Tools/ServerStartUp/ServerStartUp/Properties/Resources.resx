@@ -158,11 +158,11 @@
     <value>Invalid file!</value>
   </data>
   <data name="Msg_Minimized" xml:space="preserve">
-    <value> minimized</value>
+  <value> has been minimized</value>
   </data>
-  <data name="Msg_MinimizedText" xml:space="preserve">
-    <value>Your Application is Running in BackGround. Double click to display it.</value>
-  </data>
+<data name="Msg_MinimizedText" xml:space="preserve">
+  <value>Your application is currently running in the background. Double-click to bring it to the foreground.</value>
+</data>
   <data name="Msg_NoAppsStarted" xml:space="preserve">
     <value>No apps started!</value>
   </data>

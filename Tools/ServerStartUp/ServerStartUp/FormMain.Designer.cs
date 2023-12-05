@@ -1,4 +1,6 @@
-﻿namespace ServerStartUp
+﻿using System;
+
+namespace ServerStartUp
 {
     partial class FormMain
     {
@@ -143,7 +145,7 @@
             this.ColumnStatus.Name = "ColumnStatus";
             this.ColumnStatus.ReadOnly = true;
             this.ColumnStatus.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.ColumnStatus.Width = 43;
+            this.ColumnStatus.Width = 60;
             // 
             // ColumnDelay
             // 
@@ -449,8 +451,6 @@
             this.statusStripMain.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
-
-
         }
 
         #endregion

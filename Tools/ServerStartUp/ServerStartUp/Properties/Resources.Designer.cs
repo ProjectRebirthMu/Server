@@ -201,7 +201,7 @@ namespace ServerStartUp.Properties {
         }
         
         /// <summary>
-        ///   Consulta uma cadeia de caracteres localizada semelhante a  minimized.
+        ///   Consulta uma cadeia de caracteres localizada semelhante a  has been minimized.
         /// </summary>
         internal static string Msg_Minimized {
             get {
@@ -210,7 +210,7 @@ namespace ServerStartUp.Properties {
         }
         
         /// <summary>
-        ///   Consulta uma cadeia de caracteres localizada semelhante a Your Application is Running in BackGround. Double click to display it..
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Your application is currently running in the background. Double-click to bring it to the foreground..
         /// </summary>
         internal static string Msg_MinimizedText {
             get {

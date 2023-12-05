@@ -63,28 +63,16 @@ namespace ServerStartUp
             {
                 foreach (DataGridViewRow row in dataGridViewMain.Rows)
                 {
-                    if (AppManager.isRunning(row.Index))
-                    {
-                        row.ReadOnly = true;
-                        row.Cells[1].Value = Properties.Resources.on;
-                    }
-                    else
-                    {
-                        row.ReadOnly = false;
-                        row.Cells[1].Value = Properties.Resources.off;
-                    }
+                    bool isRunning = AppManager.isRunning(row.Index);
+                    row.ReadOnly = isRunning;
+                    row.Cells[1].Value = isRunning ? Properties.Resources.on : Properties.Resources.off;
                 }
 
-                if (AppManager.AnyRunning())
-                {
-                    statusStripMain.Items[0].Text = " " + AppManager.GetCount(false) + " app(s) running..";
-                }
-                else
-                {
-                    statusStripMain.Items[0].Text = " not running..";
-                }
+                statusStripMain.Items[0].Text = AppManager.AnyRunning()
+                    ? $" {AppManager.GetCount(false)} app(s) running.."
+                    : " not running..";
             }
-            catch (Exception)
+            catch
             {
                 /**/
             }
@@ -92,7 +80,7 @@ namespace ServerStartUp
 
         private void FormMain_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (AppManager.AnyRunning() == false)
+            if (!AppManager.AnyRunning())
             {
                 try
                 {
@@ -133,11 +121,8 @@ namespace ServerStartUp
 
             dataGridViewMain.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
 
-            if (dataGridViewMain.Rows.Count <= 0)
-            {
-                toolStripButtonDel.Enabled = false;
-                toolStripButtonDelAll.Enabled = false;
-            }
+            toolStripButtonDel.Enabled = dataGridViewMain.Rows.Count > 0;
+            toolStripButtonDelAll.Enabled = dataGridViewMain.Rows.Count > 0;
 
             statusStripMain.Items[0].Text = " not running..";
         }
@@ -148,9 +133,11 @@ namespace ServerStartUp
             {
                 if (openFileDialogMain.ShowDialog() == DialogResult.OK)
                 {
-                    if (File.Exists(openFileDialogMain.FileName))
+                    string fileName = openFileDialogMain.FileName;
+
+                    if (File.Exists(fileName))
                     {
-                        dataGridViewMain.Rows.Add(true, Properties.Resources.off, "2000", openFileDialogMain.FileName.ToString(), "");
+                        dataGridViewMain.Rows.Add(true, Properties.Resources.off, "2000", fileName, "");
 
                         if (dataGridViewMain.IsCurrentCellDirty)
                         {
@@ -182,11 +169,11 @@ namespace ServerStartUp
 
                     if (MessageBox.Show(Properties.Resources.Msg_DelAsk, this.Text, MessageBoxButtons.OKCancel, MessageBoxIcon.Question) == DialogResult.OK)
                     {
-                        if (AppManager.isRunning(row.Index) == false)
+                        if (!AppManager.isRunning(row.Index))
                         {
                             dataGridViewMain.Rows.RemoveAt(row.Index);
 
-                            if (dataGridViewMain.SelectedRows.Count == 0)
+                            if (dataGridViewMain.Rows.Count == 0)
                             {
                                 toolStripButtonDel.Enabled = false;
                                 toolStripButtonDelAll.Enabled = false;
@@ -211,7 +198,7 @@ namespace ServerStartUp
             {
                 if (MessageBox.Show(Properties.Resources.Msg_DelAsk2, this.Text, MessageBoxButtons.OKCancel, MessageBoxIcon.Question) == DialogResult.OK)
                 {
-                    if (AppManager.AnyRunning() == false)
+                    if (!AppManager.AnyRunning())
                     {
                         dataGridViewMain.Rows.Clear();
 
@@ -234,7 +221,7 @@ namespace ServerStartUp
         {
             try
             {
-                if (AppManager.AnyRunning() == false)
+                if (!AppManager.AnyRunning())
                 {
                     toolStripButtonEnd.Visible = true;
                     toolStripButtonRun.Visible = false;
@@ -258,9 +245,9 @@ namespace ServerStartUp
 
                     foreach (DataGridViewRow row in dataGridViewMain.Rows)
                     {
-                        if (AppManager.isNull(row.Index) == true)
+                        if (AppManager.isNull(row.Index))
                         {
-                            if (Convert.ToBoolean(row.Cells[0].Value) == true)
+                            if (Convert.ToBoolean(row.Cells[0].Value))
                             {
                                 row.ReadOnly = true;
                                 AppManager.Run(row.Index, row.Cells[3].Value.ToString(), row.Cells[4].Value.ToString(), Convert.ToInt32(row.Cells[2].Value), windowStyleOnRun);
@@ -272,10 +259,9 @@ namespace ServerStartUp
 
                     timerMainGrid.Start();
                     timerMainGrid_Tick(sender, e);
-                    
-     
-                    this.WindowState = FormWindowState.Normal;
-                    this.Activate();
+
+                    WindowState = FormWindowState.Normal;
+                    Activate();
                 }
             }
             catch (Exception ex)
@@ -306,7 +292,7 @@ namespace ServerStartUp
                 {
                     DataGridViewRow row = dataGridViewMain.Rows[cell.RowIndex];
 
-                    if (Convert.ToBoolean(row.Cells[0].Value) == true)
+                    if (Convert.ToBoolean(row.Cells[0].Value))
                     {
                         row.ReadOnly = true;
                         AppManager.Run(row.Index, row.Cells[3].Value.ToString(), row.Cells[4].Value.ToString(), Convert.ToInt32(row.Cells[2].Value), windowStyleOnRun);
@@ -352,7 +338,7 @@ namespace ServerStartUp
                     row.Cells[1].Value = Properties.Resources.off;
                 }
 
-                if (AppManager.AnyRunning() == false)
+                if (!AppManager.AnyRunning())
                 {
                     toolStripButtonHide.Visible = false;
                     toolStripButtonShow.Visible = false;
@@ -380,7 +366,7 @@ namespace ServerStartUp
                     }
                 }
 
-                if (AppManager.AnyRunning() == false)
+                if (!AppManager.AnyRunning())
                 {
                     toolStripButtonHide.Visible = false;
                     toolStripButtonShow.Visible = false;
@@ -405,19 +391,23 @@ namespace ServerStartUp
         {
             if (WindowState == FormWindowState.Minimized)
             {
-                this.Hide();
+                Hide();
 
                 notifyIconMain.Visible = true;
-                notifyIconMain.BalloonTipTitle = this.Text + Properties.Resources.Msg_Minimized;
+                notifyIconMain.BalloonTipTitle = Properties.Resources.Msg_Minimized;
                 notifyIconMain.BalloonTipText = Properties.Resources.Msg_MinimizedText;
-                notifyIconMain.ShowBalloonTip(10000, this.Text + Properties.Resources.Msg_Minimized, Properties.Resources.Msg_MinimizedText, ToolTipIcon.Info);
+                notifyIconMain.ShowBalloonTip(10000, Properties.Resources.Msg_Minimized, Properties.Resources.Msg_MinimizedText, ToolTipIcon.Info);
+            }
+            else if (WindowState == FormWindowState.Normal)
+            {
+                Show();
             }
         }
 
         private void notifyIconMain_DoubleClick(object sender, EventArgs e)
         {
-            this.Show();
-            this.WindowState = FormWindowState.Normal;
+            Show();
+            WindowState = FormWindowState.Normal;
             notifyIconMain.Visible = false;
         }
 
@@ -449,13 +439,15 @@ namespace ServerStartUp
         {
             try
             {
-                if(e.RowIndex >= 0 && e.ColumnIndex == 3 && dataGridViewMain.Rows[e.RowIndex].ReadOnly == false)
+                if (e.RowIndex >= 0 && e.ColumnIndex == 3 && !dataGridViewMain.Rows[e.RowIndex].ReadOnly)
                 {
                     if (openFileDialogMain.ShowDialog() == DialogResult.OK)
                     {
-                        if (File.Exists(openFileDialogMain.FileName))
+                        string selectedFilePath = openFileDialogMain.FileName;
+
+                        if (File.Exists(selectedFilePath))
                         {
-                            dataGridViewMain.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = openFileDialogMain.FileName.ToString();
+                            dataGridViewMain.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = selectedFilePath;
 
                             if (dataGridViewMain.IsCurrentCellDirty)
                             {
@@ -487,14 +479,19 @@ namespace ServerStartUp
                     dataGridViewMain.CommitEdit(DataGridViewDataErrorContexts.Commit);
                 }
 
+                bool anyRunning = false;
+                bool allRunning = true;
+
                 foreach (DataGridViewCell cell in dataGridViewMain.SelectedCells)
                 {
-                    Boolean Running = AppManager.isRunning(cell.RowIndex);
-
-                    contextMenuStripMain.Items[0].Visible = Running ? false : true;
-                    contextMenuStripMain.Items[1].Visible = Running;
-                    contextMenuStripMain.Items[2].Visible = Running;
+                    bool isRunning = AppManager.isRunning(cell.RowIndex);
+                    anyRunning |= isRunning;
+                    allRunning &= isRunning;
                 }
+
+                contextMenuStripMain.Items[0].Visible = !anyRunning;
+                contextMenuStripMain.Items[1].Visible = allRunning;
+                contextMenuStripMain.Items[2].Visible = allRunning;
             }
             catch (Exception ex)
             {
@@ -552,7 +549,7 @@ namespace ServerStartUp
         {
             try
             {
-                if (AppManager.AnyRunning() == false)
+                if (!AppManager.AnyRunning())
                 {
                     using (FormSettings formSettings = new FormSettings())
                     {
@@ -587,20 +584,22 @@ namespace ServerStartUp
                 aboutForm.MinimizeBox = false;
                 aboutForm.StartPosition = FormStartPosition.CenterParent;
 
+                var labelsFont = new Font(FontFamily.GenericSansSerif, 12);
+
                 var nameLabel = new Label
                 {
-                    Text = "Nome do arquivo: ServerStartUp",
+                    Text = "File Name: ServerStartUp",
                     Dock = DockStyle.Top,
                     TextAlign = ContentAlignment.MiddleCenter,
-                    Font = new Font(FontFamily.GenericSansSerif, 12),
+                    Font = labelsFont,
                 };
 
-                var releaseDateLabel = new Label
+                var releaseLabel = new Label
                 {
-                    Text = "Data de lançamento: 05/10/23",
+                    Text = $"Version: {System.Reflection.Assembly.GetExecutingAssembly().GetName().Version}",
                     Dock = DockStyle.Top,
                     TextAlign = ContentAlignment.MiddleCenter,
-                    Font = new Font(FontFamily.GenericSansSerif, 12),
+                    Font = labelsFont,
                 };
 
                 var authorLabel = new Label
@@ -608,20 +607,22 @@ namespace ServerStartUp
                     Text = "By: Qubit",
                     Dock = DockStyle.Top,
                     TextAlign = ContentAlignment.MiddleCenter,
-                    Font = new Font(FontFamily.GenericSansSerif, 12),
+                    Font = labelsFont,
                 };
 
                 var okButton = new Button
                 {
                     Text = "OK",
                     DialogResult = DialogResult.OK,
+                    Size = new Size(80, 30),
+                    FlatStyle = FlatStyle.Flat,
+                    BackColor = Color.FromArgb(0, 123, 255),
+                    ForeColor = Color.White,
+                    Font = new Font(FontFamily.GenericSansSerif, 10, FontStyle.Bold),
                     Dock = DockStyle.Bottom,
                 };
 
-                aboutForm.Controls.Add(nameLabel);
-                aboutForm.Controls.Add(releaseDateLabel);
-                aboutForm.Controls.Add(authorLabel);
-                aboutForm.Controls.Add(okButton);
+                aboutForm.Controls.AddRange(new Control[] { nameLabel, releaseLabel, authorLabel, okButton });
 
                 aboutForm.AcceptButton = okButton;
 
@@ -631,7 +632,7 @@ namespace ServerStartUp
 
         private void menuStripMain_MenuActivate(object sender, EventArgs e)
         {
-            optionsToolStripMenuItem.Enabled = AppManager.AnyRunning() ? false : true;
+            optionsToolStripMenuItem.Enabled = !AppManager.AnyRunning();
         }
     }
 }
